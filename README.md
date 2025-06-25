@@ -30,7 +30,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
 - Print to console: `p(foo)`
-- Comments: `// This is a comment`
+- Comments (inline and alone): `// This is a comment`
 - Colored error messages: `ERROR - My error message`
 - REPL: Use `muffin` to enter
 
