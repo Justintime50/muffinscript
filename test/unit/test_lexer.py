@@ -44,16 +44,16 @@ def test_tokenizer():
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize("foo = .test", 13)
-    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float on line 13"
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float | line: 13"
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize("foo = 2.3.4", 14)
-    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float on line 14"
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float | line: 14"
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize("?", 15)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unknown token on line 15: ?"
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 15"
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize('p("hello world)', 10)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unterminated string on line 10"
+    assert str(error.value) == "\033[31mERROR\033[0m - Unterminated string | line: 10"

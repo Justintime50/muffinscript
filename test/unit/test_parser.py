@@ -8,7 +8,7 @@ def test_tokens_unknown_statement():
     """Test we throw an error when an unknown statement is used."""
     with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(["?"], 1)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unknown statement on line 1"
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 1"
 
 
 def test_parse_print_tokens():
@@ -18,7 +18,7 @@ def test_parse_print_tokens():
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(["p", "(", "foo"], 2)
-    assert str(error.value) == "\033[31mERROR\033[0m - Expected print statement in the form p(variableName)"
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 2"
 
 
 def test_parse_variable_tokens():
@@ -46,4 +46,4 @@ def test_parse_expression():
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(["foo", "=", "2", "?", "2"], 1)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported expression on line 1"
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 1"

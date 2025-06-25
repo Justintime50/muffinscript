@@ -49,4 +49,4 @@ def test_evaluate_expression():
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         evaluate_tokens(["foo", "=", ("+", "true", "2")], 3, {})
-    assert str(error.value) == "\033[31mERROR\033[0m - Invalid arithmetic expression at line 3"
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid expression | line: 3"

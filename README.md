@@ -94,4 +94,3 @@ Actually executes the program.
 - Functions
 - Errors
 - String interpolation and concatenation
-- Determine consistent language for error message, consolidate as constants

@@ -8,7 +8,7 @@ from muffinscript.errors import (
 
 def test_program_syntax_error_string():
     """Test that we return an error string correctly."""
-    error = MuffinScriptSyntaxError("Mock error")
+    error = MuffinScriptSyntaxError("Mock error", 1)
     assert "\033[31mERROR\033[0m - Mock error" in str(error)
 
 

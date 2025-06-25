@@ -51,11 +51,11 @@ def test_main_tokenizer_error(monkeypatch, capsys):
     mock_file = io.StringIO("!!!\n")
     monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
 
-    with mock.patch("muffinscript.lexer.tokenize", side_effect=MuffinScriptSyntaxError()):
+    with mock.patch("muffinscript.lexer.tokenize", side_effect=MuffinScriptSyntaxError("", 1)):
         with pytest.raises(SystemExit):
             main()
         captured = capsys.readouterr()
-        assert "\x1b[31mERROR\x1b[0m - Unknown token on line 1: !\n" in captured.out
+        assert "\x1b[31mERROR\x1b[0m - Unsupported statement | line: 1\n" in captured.out
 
 
 def test_main_parser_error(monkeypatch, capsys):
@@ -64,8 +64,8 @@ def test_main_parser_error(monkeypatch, capsys):
     mock_file = io.StringIO("p(foo\n")
     monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
 
-    with mock.patch("muffinscript.parser.parse_tokens", side_effect=MuffinScriptSyntaxError()):
+    with mock.patch("muffinscript.parser.parse_tokens", side_effect=MuffinScriptSyntaxError("", 1)):
         with pytest.raises(SystemExit):
             main()
         captured = capsys.readouterr()
-        assert "\x1b[31mERROR\x1b[0m - Expected print statement in the form p(variableName)\n" in captured.out
+        assert "\x1b[31mERROR\x1b[0m - Unsupported statement | line: 1\n" in captured.out

@@ -1,6 +1,7 @@
 import operator
 
 
+# Supported types
 SUPPORTED_TYPES = str | int | float | bool | None
 SUPPORTED_OPERATORS = {
     "+": operator.add,
@@ -14,3 +15,10 @@ SUPPORTED_OPERATORS = {
     "<": operator.lt,
     "<=": operator.le,
 }
+
+# Error messages
+INVALID_EXPRESSION = "Invalid expression"
+INVALID_FLOAT = "Invalid float"
+UNDEFINED_VARIABLE = "Undefined variable: {}"
+UNSUPPORTED_STATEMENT = "Unsupported statement"
+UNTERMINATED_STRINGS = "Unterminated string"

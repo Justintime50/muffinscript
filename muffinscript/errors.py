@@ -19,9 +19,13 @@ class MuffinScriptSyntaxError(SyntaxError):
     This error is not intended to show a stacktrace with.
     """
 
+    def __init__(self, message: str, line_number: int):
+        self.message = message
+        self.line_number = line_number
+        super().__init__(message)
+
     def __str__(self):
-        # TODO: Require passing a line number here
-        return f"\033[31mERROR\033[0m - {super().__str__()}"
+        return f"\033[31mERROR\033[0m - {self.message} | line: {self.line_number}"
 
 
 def output_error(message: str):

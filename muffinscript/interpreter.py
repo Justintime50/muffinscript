@@ -1,8 +1,10 @@
 from typing import Union
 
 from muffinscript.constants import (
+    INVALID_EXPRESSION,
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
+    UNDEFINED_VARIABLE,
 )
 from muffinscript.errors import (
     MuffinCrumbsError,
@@ -39,7 +41,7 @@ def _evaluate_prints(
     if print_arg in variables:
         return variables[print_arg]
     else:
-        raise MuffinScriptSyntaxError(f"Undefined variable {print_arg} on line {line_number}")
+        raise MuffinScriptSyntaxError(UNDEFINED_VARIABLE.format(print_arg), line_number)
     # If the user got here, we messed up
     raise MuffinCrumbsError()
 
@@ -78,7 +80,7 @@ def _evaluate_expression(
             float(str(left))
             float(str(right))
         except ValueError:
-            raise MuffinScriptSyntaxError(f"Invalid arithmetic expression at line {line_number}")
+            raise MuffinScriptSyntaxError(INVALID_EXPRESSION, line_number)
         evaluation = SUPPORTED_OPERATORS[expression[0]](left, right)
         if evaluation is True:
             return "true"

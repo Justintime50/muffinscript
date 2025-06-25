@@ -1,27 +1,29 @@
-from muffinscript.constants import SUPPORTED_TYPES
+from muffinscript.constants import (
+    INVALID_FLOAT,
+    SUPPORTED_TYPES,
+    UNSUPPORTED_STATEMENT,
+    UNTERMINATED_STRINGS,
+)
 from muffinscript.errors import MuffinScriptSyntaxError
 
 
-def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
+def tokenize(
+    input: str,
+    line_number: int,
+) -> list[SUPPORTED_TYPES]:
     """Tokenize a line of code.
 
-    - Skip spaces and newlines
-    - Skip comments
-    - Ensure all characters match what is supported, error if not
+    - Skip spaces, newlines, comments
+    - Ensure all characters match what is supported, break into tokens, error if not
     """
     tokens: list[SUPPORTED_TYPES] = []
     i = 0
-
     stripped_input = input.replace("\n", "").strip()
-
-    # Ignore empty lines
-    if not stripped_input:
-        return []
 
     while i < len(stripped_input):
         char = stripped_input[i]
         match char:
-            # Variables and Booleans
+            # Variables, Booleans, and Null
             case _ if char.isalpha():
                 start = i
                 while i < len(stripped_input) and (stripped_input[i].isalnum()):
@@ -42,7 +44,7 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
                 while end < len(stripped_input) and stripped_input[end] != '"':
                     end += 1
                 if end >= len(stripped_input):
-                    raise MuffinScriptSyntaxError(f"Unterminated string on line {line_number}")
+                    raise MuffinScriptSyntaxError(UNTERMINATED_STRINGS, line_number)
                 tokens.append('"' + stripped_input[start:end] + '"')
                 i = end + 1
             # Integers and Floats
@@ -56,9 +58,9 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
                     try:
                         tokens.append(float(stripped_input[start:i]))
                     except ValueError:
-                        raise MuffinScriptSyntaxError(f"Invalid float on line {line_number}")
-                else:
-                    raise MuffinScriptSyntaxError(f"Invalid float on line {line_number}")
+                        raise MuffinScriptSyntaxError(INVALID_FLOAT, line_number)
+                elif stripped_input[start:i].count(".") > 1:
+                    raise MuffinScriptSyntaxError(INVALID_FLOAT, line_number)
             # Functions
             case "(":
                 tokens.append("(")
@@ -96,7 +98,7 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
                     tokens.append("!=")
                     i += 2
                 else:
-                    raise MuffinScriptSyntaxError(f"Unknown token on line {line_number}: {stripped_input[i]}")
+                    raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
             case ">":
                 if stripped_input[i + 1] == "=":
                     tokens.append(">=")
@@ -116,6 +118,6 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
                 i += 1
             # All else
             case _:
-                raise MuffinScriptSyntaxError(f"Unknown token on line {line_number}: {stripped_input[i]}")
+                raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
     return tokens
