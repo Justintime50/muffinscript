@@ -7,3 +7,4 @@
 - Print to console
 - Comments
 - Colored error messages
+- REPL

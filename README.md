@@ -30,8 +30,11 @@ So what's it used for? Building tiny little scripts and tools.
 - Print to console
 - Comments
 - Colored error messages
+- REPL
 
 ## Usage
+
+Create a `filename.ms` file and start coding with `muffin filename.ms`:
 
 ```ms
 // Variable assignment and printing
@@ -40,6 +43,12 @@ p("hello world")
 // Simple arithmetic (add, subtract, multiply, divide)
 foo = 2 + 2
 p(foo)
+```
+
+Altnernatively, jump into the REPL to play around with commands without writing new files:
+
+```sh
+muffin
 ```
 
 ## Development
@@ -71,6 +80,5 @@ Actually executes the program.
 - Control flow (if, else, elseif?)
 - Functions
 - Errors
-- Repl
 - String interpolation and concatenation
 - Determine consistent language for error message, consolidate as constants
