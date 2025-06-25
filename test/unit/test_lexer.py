@@ -34,13 +34,13 @@ def test_tokenizer():
     assert tokens == ["foo", "=", 2.5]
 
     tokens = tokenize("foo = true", 10)
-    assert tokens == ["foo", "=", "true"]
+    assert tokens == ["foo", "=", True]
 
     tokens = tokenize("foo = false", 11)
-    assert tokens == ["foo", "=", "false"]
+    assert tokens == ["foo", "=", False]
 
     tokens = tokenize("foo = null", 12)
-    assert tokens == ["foo", "=", "null"]
+    assert tokens == ["foo", "=", None]
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize("foo = .test", 13)

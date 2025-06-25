@@ -30,7 +30,15 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
                 start = i
                 while i < len(sanitized_input) and (sanitized_input[i].isalnum()):
                     i += 1
-                tokens.append(sanitized_input[start:i])
+                phrase = sanitized_input[start:i]
+                if phrase == "true":
+                    tokens.append(True)
+                elif phrase == "false":
+                    tokens.append(False)
+                elif phrase == "null":
+                    tokens.append(None)
+                else:
+                    tokens.append(phrase)
             # Strings
             case '"':
                 start = i + 1

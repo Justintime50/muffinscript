@@ -22,13 +22,13 @@ def test_evaluate_prints():
     expression = evaluate_expression(["p", "foo"], 1, {"foo": "hello world"})
     assert expression == "hello world"
 
-    expression = evaluate_expression(["p", "true"], 2, {})
+    expression = evaluate_expression(["p", True], 2, {})
     assert expression == "true"
 
-    expression = evaluate_expression(["p", "false"], 3, {})
+    expression = evaluate_expression(["p", False], 3, {})
     assert expression == "false"
 
-    expression = evaluate_expression(["p", "null"], 4, {})
+    expression = evaluate_expression(["p", None], 4, {})
     assert expression == "null"
 
     with pytest.raises(MuffinCrumbsError) as error:

@@ -34,16 +34,20 @@ def _evaluate_prints(
     p("hello world")
     p(foo)
     """
-    print_arg = str(tokens[1])
+    print_arg = tokens[1]
     # Retrieve variable
-    if print_arg in variables:
-        return variables[print_arg]
+    if str(print_arg) in variables:
+        return variables[str(print_arg)]
     # Strings
-    if print_arg.startswith('"') and print_arg.endswith('"'):
-        return print_arg.strip('"')
+    elif str(print_arg).startswith('"') and str(print_arg).endswith('"'):
+        return str(print_arg).strip('"')
     # Booleans
-    if print_arg == "true" or print_arg == "false" or print_arg == "null":
-        return print_arg
+    elif print_arg is True:
+        return "true"
+    elif print_arg is False:
+        return "false"
+    elif print_arg is None:
+        return "null"
     # If the user got here, we messed up
     raise MuffinCrumbsError()
 
@@ -86,8 +90,8 @@ def _evaluate_expression(
         left = _evaluate_expression(expression[1], line_number, variables)
         right = _evaluate_expression(expression[2], line_number, variables)
         try:
-            float(left)
-            float(right)
+            float(str(left))
+            float(str(right))
         except ValueError:
             raise MuffinScriptSyntaxError(f"Invalid arithmetic expression at line {line_number}")
         return operations[expression[0]](left, right)

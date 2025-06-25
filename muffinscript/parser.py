@@ -48,9 +48,9 @@ def _parse_expression(
 
         if (
             (isinstance(token, str) and token.startswith('"') and token.endswith('"'))
-            or token == "true"  # nosec
-            or token == "false"  # nosec
-            or token == "null"  # nosec
+            or token is True
+            or token is False
+            or token is None
             or isinstance(token, int)
             or isinstance(token, float)
         ):
