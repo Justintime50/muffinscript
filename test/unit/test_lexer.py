@@ -1,6 +1,6 @@
 import pytest
 
-from muffinscript.error import ProgramSyntaxError
+from muffinscript.errors import ProgramSyntaxError
 from muffinscript.lexer import tokenize
 
 

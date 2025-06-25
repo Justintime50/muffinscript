@@ -1,6 +1,6 @@
 import pytest
 
-from muffinscript.error import (
+from muffinscript.errors import (
     ProgramSyntaxError,
     output_error,
 )
