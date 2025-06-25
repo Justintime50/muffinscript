@@ -1,6 +1,9 @@
 from typing import Union
 
-from muffinscript.constants import SUPPORTED_TYPES
+from muffinscript.constants import (
+    SUPPORTED_OPERATORS,
+    SUPPORTED_TYPES,
+)
 from muffinscript.errors import MuffinScriptSyntaxError
 
 
@@ -19,13 +22,10 @@ def parse_tokens(
 def _parse_print_tokens(
     tokens: list[SUPPORTED_TYPES], line_number: int
 ) -> list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]]:
-    """Print tokens should look like: ["p", "(", "hello world", ")"]"""
+    """Print tokens should look like: ["p", "(", "foo", ")"]"""
     if len(tokens) != 4 or tokens[1] != "(" or tokens[3] != ")":
-        raise MuffinScriptSyntaxError("Expected print statement in the form p(<print_arg>)")
-    print_arg = tokens[2]
-    if not (isinstance(print_arg, str) and print_arg):
-        raise MuffinScriptSyntaxError("Can only print strings or variable names")
-    return [tokens[0], print_arg]
+        raise MuffinScriptSyntaxError("Expected print statement in the form p(variableName)")
+    return [tokens[0], tokens[2]]
 
 
 def _parse_variable_tokens(
@@ -42,7 +42,7 @@ def _parse_expression(
     tokens: list[SUPPORTED_TYPES], line_number: int
 ) -> SUPPORTED_TYPES | tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]:
     """Parse the expression of a variable before assignment."""
-    # eg: single string or int
+    # eg: single value, direct assignment
     if len(tokens) == 1:
         token = tokens[0]
 
@@ -56,23 +56,13 @@ def _parse_expression(
         ):
             return token
 
+    # eg: expression such as `2 + 2`, `3 * 4`, etc
     # TODO: Support multiple arithmetic chaining
-    elif len(tokens) == 3 and tokens[1] == "+":
+    elif len(tokens) == 3 and tokens[1] in SUPPORTED_OPERATORS.keys():
+        operation = str(tokens[1])
         left = tokens[0]
         right = tokens[2]
-        return ("+", left, right)  # tuple to distinguish type of expression in interpreter
-    elif len(tokens) == 3 and tokens[1] == "-":
-        left = tokens[0]
-        right = tokens[2]
-        return ("-", left, right)  # tuple to distinguish type of expression in interpreter
-    elif len(tokens) == 3 and tokens[1] == "*":
-        left = tokens[0]
-        right = tokens[2]
-        return ("*", left, right)  # tuple to distinguish type of expression in interpreter
-    elif len(tokens) == 3 and tokens[1] == "/":
-        left = tokens[0]
-        right = tokens[2]
-        return ("/", left, right)  # tuple to distinguish type of expression in interpreter
+        return (operation, left, right)  # tuple to distinguish type of expression in interpreter
 
     # eg: missing assignment
     raise MuffinScriptSyntaxError(f"Unsupported expression on line {line_number}")

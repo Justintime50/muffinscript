@@ -5,7 +5,7 @@ from muffinscript.errors import (
     MuffinScriptSyntaxError,
     output_error,
 )
-from muffinscript.interpreter import evaluate_expression
+from muffinscript.interpreter import evaluate_tokens
 from muffinscript.lexer import tokenize
 from muffinscript.parser import parse_tokens
 
@@ -44,7 +44,7 @@ def main():
         line_number = i + 1
 
         try:
-            result = evaluate_expression(tokens, line_number, variables)
+            result = evaluate_tokens(tokens, line_number, variables)
         except MuffinScriptSyntaxError as error:
             output_error(error)
 
@@ -66,7 +66,7 @@ def repl():
             tokens = tokenize(line, line_number)
             if tokens:
                 parsed_tokens = parse_tokens(tokens, line_number)
-                result = evaluate_expression(parsed_tokens, line_number, variables)
+                result = evaluate_tokens(parsed_tokens, line_number, variables)
                 if tokens[0] == "p" and result:
                     print(result)
         except MuffinScriptSyntaxError as error:

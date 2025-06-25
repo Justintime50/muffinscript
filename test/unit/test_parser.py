@@ -13,16 +13,12 @@ def test_tokens_unknown_statement():
 
 def test_parse_print_tokens():
     """Test that we parse the `p()` function correctly."""
-    parsed_tokens = parse_tokens(["p", "(", '"hello world"', ")"], 1)
-    assert parsed_tokens == ["p", '"hello world"']
+    parsed_tokens = parse_tokens(["p", "(", "foo", ")"], 1)
+    assert parsed_tokens == ["p", "foo"]
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
-        parse_tokens(["p", "(", '"hello world"'], 2)
-    assert str(error.value) == "\033[31mERROR\033[0m - Expected print statement in the form p(<print_arg>)"
-
-    with pytest.raises(MuffinScriptSyntaxError) as error:
-        parse_tokens(["p", "(", 2, ")"], 3)
-    assert str(error.value) == "\033[31mERROR\033[0m - Can only print strings or variable names"
+        parse_tokens(["p", "(", "foo"], 2)
+    assert str(error.value) == "\033[31mERROR\033[0m - Expected print statement in the form p(variableName)"
 
 
 def test_parse_variable_tokens():

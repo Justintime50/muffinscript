@@ -1,27 +1,28 @@
-import operator
 from typing import Union
 
-from muffinscript.constants import SUPPORTED_TYPES
+from muffinscript.constants import (
+    SUPPORTED_OPERATORS,
+    SUPPORTED_TYPES,
+)
 from muffinscript.errors import (
     MuffinCrumbsError,
     MuffinScriptSyntaxError,
 )
 
 
-def evaluate_expression(
+def evaluate_tokens(
     tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
     line_number: int,
     variables: dict[str, SUPPORTED_TYPES],
 ) -> SUPPORTED_TYPES | None:
-    """Evaluates an expression based on the tokens used."""
+    """Evaluates tokens to determine what to run."""
     if tokens[0] == "p":
         return _evaluate_prints(tokens, line_number, variables)
     if len(tokens) > 2 and tokens[1] == "=":
         _evaluate_variable_assignment(tokens, line_number, variables)
         return None
-    else:
-        # If the user got here, we messed up
-        raise MuffinCrumbsError()
+    # If the user got here, we messed up
+    raise MuffinCrumbsError()
 
 
 def _evaluate_prints(
@@ -31,23 +32,14 @@ def _evaluate_prints(
 ) -> SUPPORTED_TYPES:
     """Evaluates print statements.
 
-    p("hello world")
+    foo = "hello world"
     p(foo)
     """
-    print_arg = tokens[1]
-    # Retrieve variable
-    if str(print_arg) in variables:
-        return variables[str(print_arg)]
-    # Strings
-    elif str(print_arg).startswith('"') and str(print_arg).endswith('"'):
-        return str(print_arg).strip('"')
-    # Booleans
-    elif print_arg is True:
-        return "true"
-    elif print_arg is False:
-        return "false"
-    elif print_arg is None:
-        return "null"
+    print_arg = str(tokens[1])
+    if print_arg in variables:
+        return variables[print_arg]
+    else:
+        raise MuffinScriptSyntaxError(f"Undefined variable {print_arg} on line {line_number}")
     # If the user got here, we messed up
     raise MuffinCrumbsError()
 
@@ -79,14 +71,7 @@ def _evaluate_expression(
     variables: dict[str, SUPPORTED_TYPES],
 ) -> SUPPORTED_TYPES:
     """Evaluates the expression assigned to a variable prior to assignment."""
-    operations = {
-        "+": operator.add,
-        "-": operator.sub,
-        "*": operator.mul,
-        "/": operator.truediv,
-    }
-
-    if isinstance(expression, tuple) and expression[0] in operations:
+    if isinstance(expression, tuple) and expression[0] in SUPPORTED_OPERATORS:
         left = _evaluate_expression(expression[1], line_number, variables)
         right = _evaluate_expression(expression[2], line_number, variables)
         try:
@@ -94,7 +79,15 @@ def _evaluate_expression(
             float(str(right))
         except ValueError:
             raise MuffinScriptSyntaxError(f"Invalid arithmetic expression at line {line_number}")
-        return operations[expression[0]](left, right)
+        evaluation = SUPPORTED_OPERATORS[expression[0]](left, right)
+        if evaluation is True:
+            return "true"
+        elif evaluation is False:
+            return "false"
+        elif evaluation is None:
+            return "null"
+        else:
+            return evaluation
     elif isinstance(expression, str):
         if expression in variables:
             return variables[expression]

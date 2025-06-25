@@ -12,7 +12,7 @@ from muffinscript.muffin import main
 def test_main_print(monkeypatch, capsys):
     """Test happy path printing."""
     monkeypatch.setattr(sys, "argv", ["muffin", "test.ms"])
-    mock_file = io.StringIO('p("hello world")\n')
+    mock_file = io.StringIO('foo = "hello world"\np(foo)\n')
     monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
 
     main()
@@ -61,11 +61,11 @@ def test_main_tokenizer_error(monkeypatch, capsys):
 def test_main_parser_error(monkeypatch, capsys):
     """Test we throw a parser error."""
     monkeypatch.setattr(sys, "argv", ["muffin", "test.ms"])
-    mock_file = io.StringIO('p("hello world"\n')
+    mock_file = io.StringIO("p(foo\n")
     monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
 
     with mock.patch("muffinscript.parser.parse_tokens", side_effect=MuffinScriptSyntaxError()):
         with pytest.raises(SystemExit):
             main()
         captured = capsys.readouterr()
-        assert "\x1b[31mERROR\x1b[0m - Expected print statement in the form p(<print_arg>)\n" in captured.out
+        assert "\x1b[31mERROR\x1b[0m - Expected print statement in the form p(variableName)\n" in captured.out

@@ -26,24 +26,28 @@ So what's it used for? Building tiny little scripts and tools.
 ## Features
 
 - Data types: `str`, `int`, `float`, `bool`, `null`
-- Simple arithmetic
-- Variable assignment
-- Print to console
-- Comments
-- Colored error messages
-- REPL
+- Simple arithmetic: `+`, `-`, `*`, `/`
+- Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
+- Variable assignment: `foo = "hello world"`
+- Print to console: `p(foo)`
+- Comments: `// This is a comment`
+- Colored error messages: `ERROR - My error message`
+- REPL: Use `muffin` to enter
 
 ## Usage
 
-Create a `filename.ms` file and start coding with `muffin filename.ms`:
+Create a `filename.ms` file and start coding with `muffin filename.ms`.
+
+- Everything must be assigned to a variable to evaluate (forces explicit self-documenting code).
 
 ```ms
 // Variable assignment and printing
-p("hello world")
+foo = "hello world"
+p(foo)
 
 // Simple arithmetic (add, subtract, multiply, divide)
-foo = 2 + 2.5
-p(foo)
+bar = 2 + 2.5
+p(bar)
 ```
 
 Commands:
@@ -84,8 +88,9 @@ Actually executes the program.
 
 ### TODO
 
-- Comparison operators (==, !=, <, >)
 - Control flow (if, else, elseif?)
+- For loops
+- Lists
 - Functions
 - Errors
 - String interpolation and concatenation

@@ -70,7 +70,7 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
             case ")":
                 tokens.append(")")
                 i += 1
-            # Operators
+            # Arithmetic Operators
             case "+":
                 tokens.append("+")
                 i += 1
@@ -83,10 +83,34 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
             case "/":
                 tokens.append("/")
                 i += 1
-            # Assignment
+            # Relational Operators
             case "=":
-                tokens.append("=")
-                i += 1
+                if sanitized_input[i + 1] == "=":
+                    tokens.append("==")
+                    i += 2
+                else:
+                    tokens.append("=")
+                    i += 1
+            case "!":
+                if sanitized_input[i + 1] == "=":
+                    tokens.append("!=")
+                    i += 2
+                else:
+                    raise MuffinScriptSyntaxError(f"Unknown token on line {line_number}: {sanitized_input[i]}")
+            case ">":
+                if sanitized_input[i + 1] == "=":
+                    tokens.append(">=")
+                    i += 2
+                else:
+                    tokens.append(">")
+                    i += 1
+            case "<":
+                if sanitized_input[i + 1] == "=":
+                    tokens.append("<=")
+                    i += 2
+                else:
+                    tokens.append("<")
+                    i += 1
             # Spaces
             case " ":
                 i += 1
