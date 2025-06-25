@@ -1,4 +1,4 @@
-from muffinscript import ProgramSyntaxError
+from muffinscript.errors import ProgramSyntaxError
 
 
 def parse_tokens(tokens: list[str], line_number: int) -> list[str]:

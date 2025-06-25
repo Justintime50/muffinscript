@@ -1,4 +1,4 @@
-from muffinscript import ProgramSyntaxError
+from muffinscript.errors import ProgramSyntaxError
 
 
 def tokenize(input: str, line_number: int) -> list:

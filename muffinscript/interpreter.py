@@ -1,6 +1,6 @@
 from typing import Any
 
-from muffinscript import ProgramSyntaxError
+from muffinscript.errors import ProgramSyntaxError
 
 
 def evaluate_expression(tokens: list[str], line_number: int, variables: dict[str, Any]) -> Any:

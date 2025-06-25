@@ -56,9 +56,11 @@ Actually executes the program.
 
 ### TODO
 
+- `--version` and `--help` flags
 - Comparison operators (==, !=, <, >)
 - Control flow (if, else, elseif?)
 - Functions
+- Errors
 - Repl
 - String interpolation and concatenation
 - Parse the entire file before evaluating any expressions

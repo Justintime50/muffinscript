@@ -1,12 +1,12 @@
 import sys
 
-from muffinscript import (
+from muffinscript.errors import (
     ProgramSyntaxError,
-    evaluate_expression,
     output_error,
-    parse_tokens,
-    tokenize,
 )
+from muffinscript.interpreter import evaluate_expression
+from muffinscript.lexer import tokenize
+from muffinscript.parser import parse_tokens
 
 
 def main():
