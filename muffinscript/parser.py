@@ -30,6 +30,7 @@ def _parse_variable_tokens(tokens: list[str]) -> list[str]:
 
 
 def _parse_expression(tokens: list[str]):
+    # eg: single string or int
     if len(tokens) == 1:
         return tokens[0]
 
@@ -51,4 +52,5 @@ def _parse_expression(tokens: list[str]):
         right = tokens[2]
         return ("/", left, right)  # tuple to distinguish type of expression in interpreter
     else:
+        # eg: missing assignment
         raise MuffinScriptSyntaxError("Unsupported expression")

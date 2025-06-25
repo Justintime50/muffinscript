@@ -1,17 +1,18 @@
 import operator
 from typing import Any
 
-from muffinscript.errors import MuffinScriptSyntaxError
+from muffinscript.errors import MuffinCrumbsError
 
 
 def evaluate_expression(tokens: list[str], line_number: int, variables: dict[str, Any]) -> Any:
     """Evaluates an expression based on the tokens used."""
     if tokens[0] == "p":
         return _evaluate_prints(tokens, line_number, variables)
-    if len(tokens) > 1 and tokens[1] == "=":
+    if len(tokens) > 2 and tokens[1] == "=":
         return _evaluate_variable_assignment(tokens, line_number, variables)
     else:
-        raise MuffinScriptSyntaxError("Unsupported expression")
+        # If the user got here, we messed up
+        raise MuffinCrumbsError()
 
 
 def _evaluate_prints(tokens: list[str], line_number: int, variables: dict[str, Any]) -> str:
@@ -26,7 +27,8 @@ def _evaluate_prints(tokens: list[str], line_number: int, variables: dict[str, A
         return str(variables[print_arg])
     if print_arg.startswith('"') and print_arg.endswith('"'):
         return str(print_arg.strip('"'))
-    raise MuffinScriptSyntaxError(f"Undefined variable or invalid print argument on line {line_number}: {print_arg}")
+    # If the user got here, we messed up
+    raise MuffinCrumbsError()
 
 
 def _evaluate_variable_assignment(tokens: list[str], line_number: int, variables: dict[str, Any]) -> None:
@@ -69,5 +71,5 @@ def _evaluate_expression(expression: Any, variables: dict[str, Any]):
         except ValueError:
             return expression
     else:
-        # TODO: Can this even be reached?
-        raise MuffinScriptSyntaxError("Unsupported expression")
+        # If the user got here, we messed up
+        raise MuffinCrumbsError()

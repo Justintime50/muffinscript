@@ -1,8 +1,23 @@
 import sys
 
 
+class MuffinCrumbsError(Exception):
+    """Used if MuffinScript had an issue. If the user receives this, something broke on our end.
+
+    This should be raised if we didn't account for something and serve as the backdrop for unreachable code.
+
+    This error should definitely show the stacktrace so we can track where in the language we hit a snag.
+    """
+
+    def __str__(self):
+        return "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
+
+
 class MuffinScriptSyntaxError(SyntaxError):
-    """Thrown if there are syntax errors in MuffinScript."""
+    """Thrown if there are syntax errors in MuffinScript.
+
+    This error is not intended to show a stacktrace with.
+    """
 
     def __str__(self):
         # TODO: Require passing a line number here

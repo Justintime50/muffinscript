@@ -73,5 +73,4 @@ Actually executes the program.
 - Errors
 - Repl
 - String interpolation and concatenation
-- Parse the entire file before evaluating any expressions
 - Determine consistent language for error message, consolidate as constants
