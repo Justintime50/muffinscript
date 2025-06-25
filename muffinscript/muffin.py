@@ -1,7 +1,7 @@
 import sys
 
 from muffinscript.errors import (
-    ProgramSyntaxError,
+    MuffinScriptSyntaxError,
     output_error,
 )
 from muffinscript.interpreter import evaluate_expression
@@ -10,6 +10,7 @@ from muffinscript.parser import parse_tokens
 
 
 def main():
+    """Runs the MuffinScript interpreter on a code file."""
     code = _get_code()
     variables = {}
 
@@ -18,18 +19,18 @@ def main():
 
         try:
             tokens = tokenize(line, line_number)
-        except ProgramSyntaxError as error:
+        except MuffinScriptSyntaxError as error:
             output_error(error)
 
         if tokens:
             try:
                 parsed_tokens = parse_tokens(tokens, line_number)
-            except ProgramSyntaxError as error:
+            except MuffinScriptSyntaxError as error:
                 output_error(error)
 
             try:
                 result = evaluate_expression(parsed_tokens, line_number, variables)
-            except ProgramSyntaxError as error:
+            except MuffinScriptSyntaxError as error:
                 output_error(error)
 
             if parsed_tokens and parsed_tokens[0] == "p" and result:
@@ -37,6 +38,7 @@ def main():
 
 
 def _get_code():
+    """Handles getting the code file and reading the content."""
     if len(sys.argv) < 2:
         print("Usage: muffin filename.ms")
         sys.exit(1)

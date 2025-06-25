@@ -1,14 +1,14 @@
 import pytest
 
 from muffinscript.errors import (
-    ProgramSyntaxError,
+    MuffinScriptSyntaxError,
     output_error,
 )
 
 
 def test_program_syntax_error_string():
     """Test that we return an error string correctly."""
-    error = ProgramSyntaxError("Mock error")
+    error = MuffinScriptSyntaxError("Mock error")
     assert "\033[31mERROR\033[0m - Mock error" in str(error)
 
 

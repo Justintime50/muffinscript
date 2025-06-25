@@ -1,7 +1,9 @@
 import sys
 
 
-class ProgramSyntaxError(SyntaxError):
+class MuffinScriptSyntaxError(SyntaxError):
+    """Thrown if there are syntax errors in MuffinScript."""
+
     def __str__(self):
         # TODO: Require passing a line number here
         return f"\033[31mERROR\033[0m - {super().__str__()}"

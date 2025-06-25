@@ -1,12 +1,12 @@
 import pytest
 
-from muffinscript.errors import ProgramSyntaxError
+from muffinscript.errors import MuffinScriptSyntaxError
 from muffinscript.parser import parse_tokens
 
 
 def test_tokens_unknown_statement():
     """Test we throw an error when an unknown statement is used."""
-    with pytest.raises(ProgramSyntaxError) as error:
+    with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(['?'], 1)
     assert str(error.value) == "\033[31mERROR\033[0m - Unknown statement on line 1"
 
@@ -16,11 +16,11 @@ def test_parse_print_tokens():
     parsed_tokens = parse_tokens(['p', '(', '"hello world"', ')'], 1)
     assert parsed_tokens == ['p', '"hello world"']
 
-    with pytest.raises(ProgramSyntaxError) as error:
+    with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(['p', '(', '"hello world"'], 2)
     assert str(error.value) == "\033[31mERROR\033[0m - Expected print statement in the form p(<print_arg>)"
 
-    with pytest.raises(ProgramSyntaxError) as error:
+    with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(['p', '(', 2, ')'], 3)
     assert str(error.value) == "\033[31mERROR\033[0m - Can only print strings or variable names"
 
@@ -45,6 +45,6 @@ def test_parse_expression():
     parsed_tokens = parse_tokens(['foo', '=', '2', '/', '2'], 1)
     assert parsed_tokens == ['foo', '=', ('/', '2', '2')]
 
-    with pytest.raises(ProgramSyntaxError) as error:
+    with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(['foo', '=', '2', '?', '2'], 1)
     assert str(error.value) == "\033[31mERROR\033[0m - Unsupported expression"

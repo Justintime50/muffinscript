@@ -1,6 +1,6 @@
 import pytest
 
-from muffinscript.errors import ProgramSyntaxError
+from muffinscript.errors import MuffinScriptSyntaxError
 from muffinscript.lexer import tokenize
 
 
@@ -30,10 +30,10 @@ def test_tokenizer():
     tokens = tokenize('foo = 2 / 2', 8)
     assert tokens == ['foo', '=', '2', '/', '2']
 
-    with pytest.raises(ProgramSyntaxError) as error:
+    with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize('?', 9)
     assert str(error.value) == "\033[31mERROR\033[0m - Unknown token on line 9: ?"
 
-    with pytest.raises(ProgramSyntaxError) as error:
+    with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize('p("hello world)', 10)
     assert str(error.value) == "\033[31mERROR\033[0m - Unterminated string on line 10"

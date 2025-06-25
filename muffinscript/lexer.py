@@ -1,4 +1,4 @@
-from muffinscript.errors import ProgramSyntaxError
+from muffinscript.errors import MuffinScriptSyntaxError
 
 
 def tokenize(input: str, line_number: int) -> list:
@@ -46,7 +46,7 @@ def tokenize(input: str, line_number: int) -> list:
                 while end < len(sanitized_input) and sanitized_input[end] != '"':
                     end += 1
                 if end >= len(sanitized_input):
-                    raise ProgramSyntaxError(f"Unterminated string on line {line_number}")
+                    raise MuffinScriptSyntaxError(f"Unterminated string on line {line_number}")
                 tokens.append('"' + sanitized_input[start:end] + '"')
                 i = end + 1
             case "+":
@@ -67,6 +67,6 @@ def tokenize(input: str, line_number: int) -> list:
             case " ":
                 i += 1
             case _:
-                raise ProgramSyntaxError(f"Unknown token on line {line_number}: {sanitized_input[i]}")
+                raise MuffinScriptSyntaxError(f"Unknown token on line {line_number}: {sanitized_input[i]}")
 
     return tokens

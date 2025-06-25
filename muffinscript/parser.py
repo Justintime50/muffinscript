@@ -1,4 +1,4 @@
-from muffinscript.errors import ProgramSyntaxError
+from muffinscript.errors import MuffinScriptSyntaxError
 
 
 def parse_tokens(tokens: list[str], line_number: int) -> list[str]:
@@ -8,16 +8,16 @@ def parse_tokens(tokens: list[str], line_number: int) -> list[str]:
     elif len(tokens) > 1 and tokens[1] == "=":
         return _parse_variable_tokens(tokens)
     else:
-        raise ProgramSyntaxError(f"Unknown statement on line {line_number}")
+        raise MuffinScriptSyntaxError(f"Unknown statement on line {line_number}")
 
 
 def _parse_print_tokens(tokens: list[str]) -> list[str]:
     """Print tokens should look like: ["p", "(", "hello world", ")"]"""
     if len(tokens) != 4 or tokens[1] != "(" or tokens[3] != ")":
-        raise ProgramSyntaxError("Expected print statement in the form p(<print_arg>)")
+        raise MuffinScriptSyntaxError("Expected print statement in the form p(<print_arg>)")
     print_arg = tokens[2]
     if not (isinstance(print_arg, str) and print_arg):
-        raise ProgramSyntaxError("Can only print strings or variable names")
+        raise MuffinScriptSyntaxError("Can only print strings or variable names")
     return [tokens[0], print_arg]
 
 
@@ -51,4 +51,4 @@ def _parse_expression(tokens: list[str]):
         right = tokens[2]
         return ("/", left, right)  # tuple to distinguish type of expression in interpreter
     else:
-        raise ProgramSyntaxError("Unsupported expression")
+        raise MuffinScriptSyntaxError("Unsupported expression")
