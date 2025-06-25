@@ -33,18 +33,21 @@ def test_parse_variable_tokens():
 
 def test_parse_expression():
     """Test that we parse expressions correctly."""
-    parsed_tokens = parse_tokens(["foo", "=", "2", "+", "2"], 1)
-    assert parsed_tokens == ["foo", "=", ("+", "2", "2")]
+    parsed_tokens = parse_tokens(["foo", "=", 2, "+", 2], 1)
+    assert parsed_tokens == ["foo", "=", ("+", 2, 2)]
 
-    parsed_tokens = parse_tokens(["foo", "=", "2", "-", "2"], 1)
-    assert parsed_tokens == ["foo", "=", ("-", "2", "2")]
+    parsed_tokens = parse_tokens(["foo", "=", 2, "-", 2], 1)
+    assert parsed_tokens == ["foo", "=", ("-", 2, 2)]
 
-    parsed_tokens = parse_tokens(["foo", "=", "2", "*", "2"], 1)
-    assert parsed_tokens == ["foo", "=", ("*", "2", "2")]
+    parsed_tokens = parse_tokens(["foo", "=", 2, "*", 2], 1)
+    assert parsed_tokens == ["foo", "=", ("*", 2, 2)]
 
-    parsed_tokens = parse_tokens(["foo", "=", "2", "/", "2"], 1)
-    assert parsed_tokens == ["foo", "=", ("/", "2", "2")]
+    parsed_tokens = parse_tokens(["foo", "=", 2, "/", 2], 1)
+    assert parsed_tokens == ["foo", "=", ("/", 2, 2)]
+
+    parsed_tokens = parse_tokens(["foo", "=", 2.5, "+", 2.3], 1)
+    assert parsed_tokens == ["foo", "=", ("+", 2.5, 2.3)]
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(["foo", "=", "2", "?", "2"], 1)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported expression"
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported expression on line 1"

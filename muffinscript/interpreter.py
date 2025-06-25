@@ -1,27 +1,37 @@
 import operator
-from typing import Any
+from typing import Union
 
+from muffinscript.constants import SUPPORTED_TYPES
 from muffinscript.errors import MuffinCrumbsError
 
 
-def evaluate_expression(tokens: list[str], line_number: int, variables: dict[str, Any]) -> Any:
+def evaluate_expression(
+    tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
+    line_number: int,
+    variables: dict[str, SUPPORTED_TYPES],
+) -> SUPPORTED_TYPES | None:
     """Evaluates an expression based on the tokens used."""
     if tokens[0] == "p":
         return _evaluate_prints(tokens, line_number, variables)
     if len(tokens) > 2 and tokens[1] == "=":
-        return _evaluate_variable_assignment(tokens, line_number, variables)
+        _evaluate_variable_assignment(tokens, line_number, variables)
+        return None
     else:
         # If the user got here, we messed up
         raise MuffinCrumbsError()
 
 
-def _evaluate_prints(tokens: list[str], line_number: int, variables: dict[str, Any]) -> str:
+def _evaluate_prints(
+    tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
+    line_number: int,
+    variables: dict[str, SUPPORTED_TYPES],
+) -> SUPPORTED_TYPES:
     """Evaluates print statements.
 
     p("hello world")
     p(foo)
     """
-    print_arg = tokens[1]
+    print_arg = str(tokens[1])
     # Retrieve variable
     if print_arg in variables:
         return variables[print_arg]
@@ -31,13 +41,17 @@ def _evaluate_prints(tokens: list[str], line_number: int, variables: dict[str, A
     raise MuffinCrumbsError()
 
 
-def _evaluate_variable_assignment(tokens: list[str], line_number: int, variables: dict[str, Any]) -> None:
+def _evaluate_variable_assignment(
+    tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
+    line_number: int,
+    variables: dict[str, SUPPORTED_TYPES],
+) -> None:
     """Evaluates variable assignment.
 
     foo = "hello world"
     foo = 2 + 2
     """
-    var_name = tokens[0]
+    var_name = str(tokens[0])
     expression = tokens[2]
     value = _evaluate_expression(expression, variables)
     # Strip quotes if it's a string literal
@@ -48,7 +62,10 @@ def _evaluate_variable_assignment(tokens: list[str], line_number: int, variables
     return None
 
 
-def _evaluate_expression(expression: Any, variables: dict[str, Any]):
+def _evaluate_expression(
+    expression: Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]],
+    variables: dict[str, SUPPORTED_TYPES],
+) -> SUPPORTED_TYPES:
     """Evaluates the expression assigned to a variable prior to assignment."""
     operations = {
         "+": operator.add,
@@ -60,16 +77,13 @@ def _evaluate_expression(expression: Any, variables: dict[str, Any]):
     if isinstance(expression, tuple) and expression[0] in operations:
         left = _evaluate_expression(expression[1], variables)
         right = _evaluate_expression(expression[2], variables)
-        # TODO: we probably shouldn't coerce this
-        return operations[expression[0]](int(left), int(right))
+        return operations[expression[0]](left, right)
     elif isinstance(expression, str):
-        # Try to resolve variable or return as int/str
         if expression in variables:
             return variables[expression]
-        try:
-            return int(expression)
-        except ValueError:
+        else:
             return expression
-    else:
-        # If the user got here, we messed up
-        raise MuffinCrumbsError()
+    elif isinstance(expression, int) or isinstance(expression, float):
+        return expression
+    # If the user got here, we messed up
+    raise MuffinCrumbsError()

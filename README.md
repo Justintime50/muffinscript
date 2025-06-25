@@ -25,6 +25,7 @@ So what's it used for? Building tiny little scripts and tools.
 
 ## Features
 
+- Data types: `str`, `int`, `float`
 - Simple arithmetic
 - Variable assignment
 - Print to console
@@ -41,7 +42,7 @@ Create a `filename.ms` file and start coding with `muffin filename.ms`:
 p("hello world")
 
 // Simple arithmetic (add, subtract, multiply, divide)
-foo = 2 + 2
+foo = 2 + 2.5
 p(foo)
 ```
 
@@ -66,6 +67,7 @@ Takes raw text and turns it into a list of tokens which are structured pieces of
 
 - Takes `print("hello world")` and converts it into `print`, `(`, `"hello world"`, and `)`
 - Detects errors in characters
+- Should convert tokens to their most appropriate types
 
 ### Parser
 

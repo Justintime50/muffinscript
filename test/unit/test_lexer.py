@@ -19,16 +19,27 @@ def test_tokenizer():
     assert tokens == ["p", "(", '"hello world"', ")"]
 
     tokens = tokenize("foo = 2 + 2", 5)
-    assert tokens == ["foo", "=", "2", "+", "2"]
+    assert tokens == ["foo", "=", 2, "+", 2]
 
     tokens = tokenize("foo = 2 - 2", 6)
-    assert tokens == ["foo", "=", "2", "-", "2"]
+    assert tokens == ["foo", "=", 2, "-", 2]
 
     tokens = tokenize("foo = 2 * 2", 7)
-    assert tokens == ["foo", "=", "2", "*", "2"]
+    assert tokens == ["foo", "=", 2, "*", 2]
 
     tokens = tokenize("foo = 2 / 2", 8)
-    assert tokens == ["foo", "=", "2", "/", "2"]
+    assert tokens == ["foo", "=", 2, "/", 2]
+
+    tokens = tokenize("foo = 2.5", 9)
+    assert tokens == ["foo", "=", 2.5]
+
+    with pytest.raises(MuffinScriptSyntaxError) as error:
+        tokenize("foo = .test", 10)
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float on line 10"
+
+    with pytest.raises(MuffinScriptSyntaxError) as error:
+        tokenize("foo = 2.3.4", 11)
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float on line 11"
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize("?", 9)
