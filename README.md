@@ -45,10 +45,17 @@ foo = 2 + 2
 p(foo)
 ```
 
-Altnernatively, jump into the REPL to play around with commands without writing new files:
+Commands:
 
 ```sh
+# REPL
 muffin
+
+# Help
+muffin --help
+
+# Version
+muffin --version
 ```
 
 ## Development
@@ -75,7 +82,6 @@ Actually executes the program.
 
 ### TODO
 
-- `--version` and `--help` flags
 - Comparison operators (==, !=, <, >)
 - Control flow (if, else, elseif?)
 - Functions

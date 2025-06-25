@@ -1,5 +1,6 @@
 import sys
 
+from muffinscript._version import __version__
 from muffinscript.errors import (
     MuffinScriptSyntaxError,
     output_error,
@@ -11,7 +12,15 @@ from muffinscript.parser import parse_tokens
 
 def main():
     """Runs the MuffinScript interpreter on a code file."""
-    code = _get_code()
+    arg_one = sys.argv[1]
+    if arg_one == "--version":
+        print(f"Muffin: v{__version__}")
+        sys.exit()
+    elif arg_one == "--help":
+        print('Baking instructions can be found at https://github.com/justintime50/muffinscript')
+        sys.exit()
+
+    code = _get_code(arg_one)
     variables = {}
     valid_lines = []
 
@@ -64,11 +73,8 @@ def repl():
             break
 
 
-def _get_code():
+def _get_code(filepath: str):
     """Handles getting the code file and reading the content."""
-    if len(sys.argv) > 2:
-        output_error("Usage: muffin filename.ms")
-    filepath = sys.argv[1]
     with open(filepath, 'r') as code:
         code_content = code.readlines()
 
@@ -76,7 +82,9 @@ def _get_code():
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
+    if len(sys.argv) > 2:
+        output_error("Usage: muffin filename.ms")
+    elif len(sys.argv) == 1:
         repl()
     else:
         main()
