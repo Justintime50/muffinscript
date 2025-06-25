@@ -1,5 +1,9 @@
 # CHANGELOG
 
-## v0.1.0 (2024-10-10)
+## Next Release
 
-- Details go here
+- Simple arithmetic
+- Variable assignment
+- Print to console
+- Comments
+- Colored error messages

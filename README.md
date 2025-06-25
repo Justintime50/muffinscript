@@ -1,48 +1,65 @@
 <div align="center">
 
-# Python Template
+# MuffinScript
 
-A Python project template to save you time and energy.
+Toy programming language
 
-[![Build Status](https://github.com/Justintime50/python-template/workflows/build/badge.svg)](https://github.com/Justintime50/python-template/actions)
-[![Coverage Status](https://coveralls.io/repos/github/Justintime50/python-template/badge.svg?branch=main)](https://coveralls.io/github/Justintime50/python-template?branch=main)
-[![Licence](https://img.shields.io/github/license/justintime50/python-template)](LICENSE)
+[![Build Status](https://github.com/justintime50/muffinscript/workflows/build/badge.svg)](https://github.com/justintime50/muffinscript/actions)
+[![Coverage Status](https://coveralls.io/repos/github/justintime50/muffinscript/badge.svg?branch=main)](https://coveralls.io/github/justintime50/muffinscript?branch=main)
+[![PyPi](https://img.shields.io/pypi/v/muffinscript)](https://pypi.org/project/muffinscript)
+[![Licence](https://img.shields.io/github/license/justintime50/muffinscript)](LICENSE)
 
-<img src="https://raw.githubusercontent.com/justintime50/assets/main/src/python-template/showcase.png" alt="Showcase">
+<img src="https://raw.githubusercontent.com/justintime50/assets/main/src/muffinscript/showcase.png" alt="Showcase">
 
 </div>
 
-Python projects take a long time to setup with all the various files, the virtual environment, and keeping things uniform across projects. With this Python template, you can quickly setup boilerplate code and miscellaneous items for your Python project saving you time and energy so you can get back to coding.
+## Features
 
-## Install
-
-Click the [Use this template](https://github.com/Justintime50/python-template/generate) button at the top of this project's GitHub page to get started.
+- Simple arithmetic
+- Variable assignment
+- Print to console
+- Comments
+- Colored error messages
 
 ## Usage
 
-### Easy text replacements
+```ms
+// Variable assignment and printing
+p("hello world")
 
-1. Replace all instances of `project_name` with the name of your project
-    * These are the Python snake_case references (eg: `project_name`)
-1. Replace all instances of `PROJECT_NAME_URL` with the name of your project
-    * These are the references to your project that will appear in URLs and are typically hyphenated (eg: `project-name`)
-1. Replace all instances of `USERNAME` with the name of the author or owner of the project
-    * These are references typically found in the URL of your project as it appears on GitHub
+// Simple arithmetic (add, subtract, multiply, divide)
+foo = 2 + 2
+p(foo)
+```
 
-### File configuration
+## Development
 
-1. Configure the `setup.py` file
-1. Configure the `justfile` targets
-1. Update the name in the `LICENSE` or swap it out entirely
-1. Configure the `.github/workflows/build.yml` file
-1. Update the `CHANGELOG.md` with your own info
-1. Rename other files/folders as needed and configure their content
-1. Delete this `README` and rename `README_project.md` to `README.md`
+### Lexer (Tokenizer)
 
-### GitHub configuration
+Takes raw text and turns it into a list of tokens which are structured pieces of the programming language (keywords, numbers, strings, symbols).
 
-1. Add a `PYPI_API_TOKEN` GitHub secret to your project so that automated releasing can occur from GitHub Actions to PyPI and uncomment the final step on the `release` job in `.github/workflows/release.yml`
+- Takes `print("hello world")` and converts it into `print`, `(`, `"hello world"`, and `)`
+- Detects errors in characters
 
-## Attribution
+### Parser
 
-* Watch [the video](https://youtu.be/ZMfcl3CnRhA) where I built this template.
+Parses the tokens from the Lexer.
+
+- Grammar rules, defines what combos of tokens are valid
+- Syntax errors detect issues
+
+### Interpreter
+
+Actually executes the program.
+
+- Prints values, assigns variables, etc
+
+### TODO
+
+- Comparison operators (==, !=, <, >)
+- Control flow (if, else, elseif?)
+- Functions
+- Repl
+- String interpolation and concatenation
+- Parse the entire file before evaluating any expressions
+- Determine consistent language for error message, consolidate as constants
