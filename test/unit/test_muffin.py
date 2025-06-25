@@ -24,7 +24,7 @@ def test_main_print(monkeypatch, capsys):
 def test_main_print_empty_file(monkeypatch, capsys):
     """Test we print nothing if the file is empty."""
     monkeypatch.setattr(sys, "argv", ["muffin", "test.ms"])
-    mock_file = io.StringIO('\n')
+    mock_file = io.StringIO("\n")
     monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
 
     main()
@@ -48,7 +48,7 @@ def test_main_print_only_variable(monkeypatch, capsys):
 def test_main_tokenizer_error(monkeypatch, capsys):
     """Test we throw a tokenizer error."""
     monkeypatch.setattr(sys, "argv", ["muffin", "test.ms"])
-    mock_file = io.StringIO('!!!\n')
+    mock_file = io.StringIO("!!!\n")
     monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
 
     with mock.patch("muffinscript.lexer.tokenize", side_effect=MuffinScriptSyntaxError()):

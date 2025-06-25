@@ -24,9 +24,9 @@ def _evaluate_prints(tokens: list[str], line_number: int, variables: dict[str, A
     print_arg = tokens[1]
     # Retrieve variable
     if print_arg in variables:
-        return str(variables[print_arg])
+        return variables[print_arg]
     if print_arg.startswith('"') and print_arg.endswith('"'):
-        return str(print_arg.strip('"'))
+        return print_arg.strip('"')
     # If the user got here, we messed up
     raise MuffinCrumbsError()
 
