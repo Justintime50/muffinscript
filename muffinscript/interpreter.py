@@ -2,7 +2,10 @@ import operator
 from typing import Union
 
 from muffinscript.constants import SUPPORTED_TYPES
-from muffinscript.errors import MuffinCrumbsError
+from muffinscript.errors import (
+    MuffinCrumbsError,
+    MuffinScriptSyntaxError,
+)
 
 
 def evaluate_expression(
@@ -35,8 +38,12 @@ def _evaluate_prints(
     # Retrieve variable
     if print_arg in variables:
         return variables[print_arg]
+    # Strings
     if print_arg.startswith('"') and print_arg.endswith('"'):
         return print_arg.strip('"')
+    # Booleans
+    if print_arg == "true" or print_arg == "false" or print_arg == "null":
+        return print_arg
     # If the user got here, we messed up
     raise MuffinCrumbsError()
 
@@ -53,7 +60,7 @@ def _evaluate_variable_assignment(
     """
     var_name = str(tokens[0])
     expression = tokens[2]
-    value = _evaluate_expression(expression, variables)
+    value = _evaluate_expression(expression, line_number, variables)
     # Strip quotes if it's a string literal
     if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
         value = value[1:-1]
@@ -64,6 +71,7 @@ def _evaluate_variable_assignment(
 
 def _evaluate_expression(
     expression: Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]],
+    line_number: int,
     variables: dict[str, SUPPORTED_TYPES],
 ) -> SUPPORTED_TYPES:
     """Evaluates the expression assigned to a variable prior to assignment."""
@@ -75,8 +83,13 @@ def _evaluate_expression(
     }
 
     if isinstance(expression, tuple) and expression[0] in operations:
-        left = _evaluate_expression(expression[1], variables)
-        right = _evaluate_expression(expression[2], variables)
+        left = _evaluate_expression(expression[1], line_number, variables)
+        right = _evaluate_expression(expression[2], line_number, variables)
+        try:
+            float(left)
+            float(right)
+        except ValueError:
+            raise MuffinScriptSyntaxError(f"Invalid arithmetic expression at line {line_number}")
         return operations[expression[0]](left, right)
     elif isinstance(expression, str):
         if expression in variables:

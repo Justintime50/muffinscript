@@ -25,8 +25,7 @@ def tokenize(input: str, line_number: int) -> list[SUPPORTED_TYPES]:
     while i < len(sanitized_input):
         char = sanitized_input[i]
         match char:
-            # Variables
-            # Bools magically work in this, thanks Python
+            # Variables and Booleans
             case _ if char.isalpha():
                 start = i
                 while i < len(sanitized_input) and (sanitized_input[i].isalnum()):

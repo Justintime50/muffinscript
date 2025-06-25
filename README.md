@@ -25,7 +25,7 @@ So what's it used for? Building tiny little scripts and tools.
 
 ## Features
 
-- Data types: `str`, `int`, `float`
+- Data types: `str`, `int`, `float`, `bool`, `null`
 - Simple arithmetic
 - Variable assignment
 - Print to console

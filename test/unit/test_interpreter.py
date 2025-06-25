@@ -1,6 +1,9 @@
 import pytest
 
-from muffinscript.errors import MuffinCrumbsError
+from muffinscript.errors import (
+    MuffinCrumbsError,
+    MuffinScriptSyntaxError,
+)
 from muffinscript.interpreter import evaluate_expression
 
 
@@ -19,8 +22,17 @@ def test_evaluate_prints():
     expression = evaluate_expression(["p", "foo"], 1, {"foo": "hello world"})
     assert expression == "hello world"
 
+    expression = evaluate_expression(["p", "true"], 2, {})
+    assert expression == "true"
+
+    expression = evaluate_expression(["p", "false"], 3, {})
+    assert expression == "false"
+
+    expression = evaluate_expression(["p", "null"], 4, {})
+    assert expression == "null"
+
     with pytest.raises(MuffinCrumbsError) as error:
-        evaluate_expression(["p", '"hello world'], 2, {})
+        evaluate_expression(["p", '"hello world'], 5, {})
     assert str(error.value) == "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
 
 
@@ -41,3 +53,7 @@ def test_evaluate_expression():
     with pytest.raises(MuffinCrumbsError) as error:
         evaluate_expression(["foo", "=", ("?", "2", "2")], 2, {})
     assert str(error.value) == "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
+
+    with pytest.raises(MuffinScriptSyntaxError) as error:
+        evaluate_expression(["foo", "=", ("+", "true", "2")], 3, {})
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid arithmetic expression at line 3"

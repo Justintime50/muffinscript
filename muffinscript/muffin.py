@@ -43,7 +43,10 @@ def main():
     for i, tokens in enumerate(valid_lines):
         line_number = i + 1
 
-        result = evaluate_expression(tokens, line_number, variables)
+        try:
+            result = evaluate_expression(tokens, line_number, variables)
+        except MuffinScriptSyntaxError as error:
+            output_error(error)
 
         if tokens and tokens[0] == "p" and result:
             print(str(result))
