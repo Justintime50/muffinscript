@@ -85,6 +85,9 @@ def tokenize(
                 else:
                     tokens.append("/")
                     i += 1
+            case "%":
+                tokens.append("%")
+                i += 1
             # Relational Operators
             case "=":
                 if stripped_input[i + 1] == "=":

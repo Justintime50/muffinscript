@@ -41,8 +41,8 @@ def test_parse_expression():
     parsed_tokens = parse_tokens(["foo", "=", 2, "/", 2], 1)
     assert parsed_tokens == ["foo", "=", ("/", 2, 2)]
 
-    parsed_tokens = parse_tokens(["foo", "=", 2.5, "+", 2.3], 1)
-    assert parsed_tokens == ["foo", "=", ("+", 2.5, 2.3)]
+    parsed_tokens = parse_tokens(["foo", "=", 2, "%", 1.5], 1)
+    assert parsed_tokens == ["foo", "=", ("%", 2, 1.5)]
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(["foo", "=", "2", "?", "2"], 1)

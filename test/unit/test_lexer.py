@@ -30,30 +30,33 @@ def test_tokenizer():
     tokens = tokenize("foo = 2 / 2", 8)
     assert tokens == ["foo", "=", 2, "/", 2]
 
-    tokens = tokenize("foo = 2.5", 9)
+    tokens = tokenize("foo = 2 % 1.5", 9)
+    assert tokens == ["foo", "=", 2, "%", 1.5]
+
+    tokens = tokenize("foo = 2.5", 10)
     assert tokens == ["foo", "=", 2.5]
 
-    tokens = tokenize("foo = true", 10)
+    tokens = tokenize("foo = true", 11)
     assert tokens == ["foo", "=", True]
 
-    tokens = tokenize("foo = false", 11)
+    tokens = tokenize("foo = false", 12)
     assert tokens == ["foo", "=", False]
 
-    tokens = tokenize("foo = null", 12)
+    tokens = tokenize("foo = null", 13)
     assert tokens == ["foo", "=", None]
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
-        tokenize("foo = .test", 13)
-    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float | line: 13"
-
-    with pytest.raises(MuffinScriptSyntaxError) as error:
-        tokenize("foo = 2.3.4", 14)
+        tokenize("foo = .test", 14)
     assert str(error.value) == "\033[31mERROR\033[0m - Invalid float | line: 14"
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
-        tokenize("?", 15)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 15"
+        tokenize("foo = 2.3.4", 15)
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float | line: 15"
 
     with pytest.raises(MuffinScriptSyntaxError) as error:
-        tokenize('p("hello world)', 10)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unterminated string | line: 10"
+        tokenize("?", 16)
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 16"
+
+    with pytest.raises(MuffinScriptSyntaxError) as error:
+        tokenize('p("hello world)', 17)
+    assert str(error.value) == "\033[31mERROR\033[0m - Unterminated string | line: 17"

@@ -8,6 +8,7 @@ SUPPORTED_OPERATORS = {
     "-": operator.sub,
     "*": operator.mul,
     "/": operator.truediv,
+    "%": operator.mod,
     "==": operator.eq,
     "!=": operator.ne,
     ">": operator.gt,

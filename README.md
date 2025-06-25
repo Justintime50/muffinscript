@@ -26,12 +26,12 @@ So what's it used for? Building tiny little scripts and tools.
 ## Features
 
 - Data types: `str`, `int`, `float`, `bool`, `null`
-- Simple arithmetic: `+`, `-`, `*`, `/`
+- Arithmetic: `+`, `-`, `*`, `/`, `%`
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
 - Print to console: `p(foo)`
 - Comments (inline and alone): `// This is a comment`
-- Colored error messages: `ERROR - My error message`
+- Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
 
 ## Usage
