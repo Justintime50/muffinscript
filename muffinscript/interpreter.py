@@ -54,4 +54,5 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
         if node in variables:
             return variables[node]
 
+    # TODO: We should be setting these back to a node
     return node

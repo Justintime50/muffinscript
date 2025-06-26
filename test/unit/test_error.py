@@ -1,9 +1,16 @@
 import pytest
 
 from muffinscript.errors import (
+    MuffinCrumbsError,
     MuffinScriptSyntaxError,
     output_error,
 )
+
+
+def test_muffin_crumbs_error():
+    """Test that we return the correct error message."""
+    error = MuffinCrumbsError()
+    assert str(error) == "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
 
 
 def test_program_syntax_error_string():
@@ -19,4 +26,5 @@ def test_output_error(capfd):
         output_error(test_message)
     assert error.value.code == 1
     out, err = capfd.readouterr()
+    assert test_message in out
     assert test_message in out
