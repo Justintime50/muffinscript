@@ -10,9 +10,11 @@ from muffinscript.ast import (
     IntNode,
     NullNode,
     PrintNode,
+    SleepNode,
     StringNode,
 )
 from muffinscript.constants import (
+    INVALID_FLOAT,
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
     UNDEFINED_VARIABLE,
@@ -29,9 +31,12 @@ def parse_tokens(
     # Print
     if "p" in tokens:
         return _parse_print_tokens(tokens, line_number)
-    # Variable assignment
+    # Variables
     elif "=" in tokens:
         return _parse_variable_tokens(tokens, line_number)
+    # Sleep
+    elif "sleep" in tokens:
+        return _parse_sleep_tokens(tokens, line_number)
     else:
         raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
@@ -41,8 +46,7 @@ def _parse_print_tokens(
     line_number: int,
 ) -> PrintNode:
     """Token schema: ["p", "(", "foo", ")"]"""
-    if tokens[0] != "p" or len(tokens) < 4 or tokens[1] != "(" or tokens[-1] != ")":
-        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+    _validate_function_schema(tokens, line_number, "p", 4)
     if len(tokens) == 4 and isinstance(tokens[2], str):
         # Using a variable
         expression: Any = tokens[2]
@@ -70,11 +74,10 @@ def _parse_variable_tokens(
     )
 
 
-def _parse_expression(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNode | None:
+def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode | None:
     """Parses an expression from provided tokens."""
     if tokens[0] == "cat":
-        if len(tokens) < 4 or tokens[1] != "(" or tokens[-1] != ")":
-            raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+        _validate_function_schema(tokens, line_number, "cat", 4)
         return CatNode(
             args=[_parse_expression([token], line_number) for token in tokens[2:-1]], line_number=line_number
         )
@@ -101,3 +104,25 @@ def _parse_expression(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNo
         return FloatNode(tokens[0], line_number)
 
     return None
+
+
+def _parse_sleep_tokens(
+    tokens: list[SUPPORTED_TYPES],
+    line_number: int,
+) -> BaseNode:
+    """Token schema: ["sleep", "(", 2.5, ")"]"""
+    _validate_function_schema(tokens, line_number, "sleep", 4)
+    if not isinstance(tokens[2], (str, int, float)):  # Allow str for variable names
+        raise MuffinScriptSyntaxError(INVALID_FLOAT, line_number)
+    return SleepNode(tokens[2], line_number)
+
+
+def _validate_function_schema(
+    tokens: list[SUPPORTED_TYPES],
+    line_number: int,
+    function_name: str,
+    min_tokens_lenth: int = 4,
+):
+    """Validates the schema of a function call."""
+    if tokens[0] != function_name or len(tokens) < min_tokens_lenth or tokens[1] != "(" or tokens[-1] != ")":
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)

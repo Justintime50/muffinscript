@@ -142,6 +142,14 @@ def test_parse_variable_tokens():
     assert node.expression.args[1].value == "bar"
     assert node.line_number == 13
 
+    node = parse_tokens(["sleep", "(", 1000.5, ")"], 14)
+    assert node.duration == 1000.5
+    assert node.line_number == 14
+
     with pytest.raises(MuffinScriptSyntaxError) as error:
-        parse_tokens(["foo", "=", "2", "?", "2"], 14)
-    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 14"
+        parse_tokens(["foo", "=", "2", "?", "2"], 15)
+    assert str(error.value) == "\033[31mERROR\033[0m - Unsupported statement | line: 15"
+
+    with pytest.raises(MuffinScriptSyntaxError) as error:
+        parse_tokens(["sleep", "(", None, ")"], 16)
+    assert str(error.value) == "\033[31mERROR\033[0m - Invalid float | line: 16"

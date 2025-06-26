@@ -8,6 +8,7 @@ from muffinscript.ast import (
     IntNode,
     NullNode,
     PrintNode,
+    SleepNode,
     StringNode,
 )
 
@@ -71,4 +72,10 @@ def test_arithmetic_node():
 def test_cat_node():
     node = CatNode(args=["hello", "world"], line_number=1)
     assert node.args == ["hello", "world"]
+    assert node.line_number == 1
+
+
+def test_sleep_node():
+    node = SleepNode(duration=1000.5, line_number=1)
+    assert node.duration == 1000.5
     assert node.line_number == 1

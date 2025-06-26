@@ -1,3 +1,4 @@
+import time
 from typing import Any
 
 from muffinscript.ast import (
@@ -9,6 +10,7 @@ from muffinscript.ast import (
     IntNode,
     NullNode,
     PrintNode,
+    SleepNode,
     StringNode,
 )
 from muffinscript.constants import (
@@ -39,6 +41,8 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
         return str(SUPPORTED_OPERATORS[node.operator](left, right)).lower()
     elif isinstance(node, CatNode):
         return "".join([arg.value for arg in node.args])
+    elif isinstance(node, SleepNode):
+        time.sleep(evaluate(node.duration, variables))  # type:ignore
     else:
         if node in variables:
             return variables[node]

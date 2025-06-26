@@ -35,6 +35,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Standard library
   - Print to console: `p("hello world")`
   - String concatenation: `cat("hello ", bar)`
+  - Sleep: `sleep(100.5)`
 
 ## Usage
 
