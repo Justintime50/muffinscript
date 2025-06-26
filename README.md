@@ -47,9 +47,11 @@ Create a `filename.ms` file and start coding with `muffin filename.ms`.
 foo = "hello world"
 p(foo)
 
-// Simple arithmetic (add, subtract, multiply, divide)
-bar = 2 + 2.5
-p(bar)
+// Simple arithmetic (add, subtract, multiply, divide, modulo)
+p(2 + 2.5)
+
+// Concatenate strings
+p(cat("I say ", foo))
 ```
 
 Commands:

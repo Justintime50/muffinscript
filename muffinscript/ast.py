@@ -35,14 +35,14 @@ class FloatNode(BaseNode):
 class BoolNode(BaseNode):
     """Booleans: true"""
 
-    def __init__(self, value: bool, line_number: int):
+    def __init__(self, value: str, line_number: int):
         super().__init__(line_number, value)
 
 
 class NullNode(BaseNode):
     """Null: null"""
 
-    def __init__(self, value: None, line_number: int):
+    def __init__(self, value: str, line_number: int):
         super().__init__(line_number, value)
 
 
@@ -81,6 +81,6 @@ class ArithmeticNode(BaseNode):
 class CatNode(BaseNode):
     """Cat function: cat("hello ", "world")"""
 
-    def __init__(self, args: list[SUPPORTED_TYPES], line_number: int):
+    def __init__(self, args: list[Any], line_number: int):
         super().__init__(line_number)
         self.args = args
