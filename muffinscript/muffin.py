@@ -5,7 +5,7 @@ from muffinscript.errors import (
     MuffinScriptSyntaxError,
     output_error,
 )
-from muffinscript.interpreter import evaluate_tokens
+from muffinscript.interpreter import evaluate
 from muffinscript.lexer import tokenize
 from muffinscript.parser import parse_tokens
 
@@ -22,34 +22,24 @@ def main():
 
     code = _get_code(arg_one)
     variables = {}
-    valid_lines = []
+    executable_lines = {}  # Stores key as line number, value as executable line (if valid)
 
-    for i, line in enumerate(code):
-        line_number = i + 1
+    try:
+        for i, line in enumerate(code):
+            line_number = i + 1
+            executable_lines[str(line_number)] = None
 
-        try:
             tokens = tokenize(line, line_number)
-        except MuffinScriptSyntaxError as error:
-            output_error(error)
+            if tokens:
+                nodes = parse_tokens(tokens, line_number)
+                executable_lines[str(line_number)] = nodes
 
-        if tokens:
-            try:
-                parsed_tokens = parse_tokens(tokens, line_number)
-                valid_lines.append(parsed_tokens)
-            except MuffinScriptSyntaxError as error:
-                output_error(error)
-
-    # Only evaluate code once the entire file has been tokenized and parsed correctly
-    for i, tokens in enumerate(valid_lines):
-        line_number = i + 1
-
-        try:
-            result = evaluate_tokens(tokens, line_number, variables)
-        except MuffinScriptSyntaxError as error:
-            output_error(error)
-
-        if tokens and tokens[0] == "p" and result:
-            print(str(result))
+        # Only evaluate code once the entire file has been tokenized and parsed correctly
+        for line_number, node in executable_lines.items():
+            if node:
+                evaluate(node, variables)
+    except MuffinScriptSyntaxError as error:
+        output_error(error)
 
 
 def repl():
@@ -65,10 +55,8 @@ def repl():
                 break
             tokens = tokenize(line, line_number)
             if tokens:
-                parsed_tokens = parse_tokens(tokens, line_number)
-                result = evaluate_tokens(parsed_tokens, line_number, variables)
-                if tokens[0] == "p" and result:
-                    print(result)
+                nodes = parse_tokens(tokens, line_number)
+                evaluate(nodes, line_number, variables)
         except MuffinScriptSyntaxError as error:
             output_error(error)
         except KeyboardInterrupt:

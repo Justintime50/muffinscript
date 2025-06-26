@@ -30,6 +30,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
 - Print to console: `p(foo)`
+- String concatenation: `foo = cat("hello ", "there ", bar)`
 - Comments (inline and alone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
@@ -65,6 +66,10 @@ muffin --version
 
 ## Development
 
+### Abstract Syntax Tree (AST)
+
+Defines the abstract supported syntax of the programming language (what is a string, what is a variable, etc).
+
 ### Lexer (Tokenizer)
 
 Takes raw text and turns it into a list of tokens which are structured pieces of the programming language (keywords, numbers, strings, symbols).
@@ -82,15 +87,16 @@ Parses the tokens from the Lexer.
 
 ### Interpreter
 
-Actually executes the program.
+Actually executes the program by traversing the AST.
 
 - Prints values, assigns variables, etc
 
 ### TODO
 
+- `str`, `int`, `float` functions
 - Control flow (if, else, elseif?)
 - For loops
 - Lists
 - Functions
 - Errors
-- String interpolation and concatenation
+- String interpolation

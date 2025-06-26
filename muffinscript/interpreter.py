@@ -1,101 +1,57 @@
-from typing import Union
+from typing import Any
 
+from muffinscript.ast import (
+    ArithmeticNode,
+    AssignNode,
+    BoolNode,
+    CatNode,
+    FloatNode,
+    IntNode,
+    NullNode,
+    PrintNode,
+    StringNode,
+)
 from muffinscript.constants import (
-    INVALID_EXPRESSION,
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
-    UNDEFINED_VARIABLE,
-)
-from muffinscript.errors import (
-    MuffinCrumbsError,
-    MuffinScriptSyntaxError,
 )
 
 
-def evaluate_tokens(
-    tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
-    line_number: int,
-    variables: dict[str, SUPPORTED_TYPES],
-) -> SUPPORTED_TYPES | None:
+def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPES:
     """Evaluates tokens to determine what to run."""
-    if tokens[0] == "p":
-        return _evaluate_prints(tokens, line_number, variables)
-    if len(tokens) > 2 and tokens[1] == "=":
-        _evaluate_variable_assignment(tokens, line_number, variables)
-        return None
-    # If the user got here, we messed up
-    raise MuffinCrumbsError()
-
-
-def _evaluate_prints(
-    tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
-    line_number: int,
-    variables: dict[str, SUPPORTED_TYPES],
-) -> SUPPORTED_TYPES:
-    """Evaluates print statements.
-
-    foo = "hello world"
-    p(foo)
-    """
-    print_arg = str(tokens[1])
-    if print_arg in variables:
-        return variables[print_arg]
+    if isinstance(node, PrintNode):
+        value = evaluate(node.value, variables)
+        print(value)
+    elif isinstance(node, AssignNode):
+        variables[node.var_name] = evaluate(node.expression, variables)
+    elif isinstance(node, StringNode):
+        # Strip quotes if it's a string literal
+        if isinstance(node.value, str) and node.value.startswith('"') and node.value.endswith('"'):
+            value = node.value[1:-1]
+        else:
+            value = node.value
+        return str(value)
+    elif isinstance(node, IntNode):
+        return int(node.value)
+    elif isinstance(node, FloatNode):
+        return float(node.value)
+    elif isinstance(node, BoolNode):
+        return str(bool(node.value)).lower()
+    elif isinstance(node, NullNode):
+        return "null"
+    elif isinstance(node, ArithmeticNode):
+        left = evaluate(node.left, variables)
+        right = evaluate(node.right, variables)
+        return str(SUPPORTED_OPERATORS[node.operator](left, right)).lower()
+    elif isinstance(node, CatNode):
+        args_to_cat: list[str] = []
+        for arg in node.args:
+            if arg in variables:
+                arg = variables[arg]
+            args_to_cat.append(str(evaluate(StringNode(arg, 0), variables)))
+        return "".join(args_to_cat)
     else:
-        raise MuffinScriptSyntaxError(UNDEFINED_VARIABLE.format(print_arg), line_number)
-    # If the user got here, we messed up
-    raise MuffinCrumbsError()
+        if node in variables:
+            return variables[node]
 
-
-def _evaluate_variable_assignment(
-    tokens: list[Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]]],
-    line_number: int,
-    variables: dict[str, SUPPORTED_TYPES],
-) -> None:
-    """Evaluates variable assignment.
-
-    foo = "hello world"
-    foo = 2 + 2
-    """
-    var_name = str(tokens[0])
-    expression = tokens[2]
-    value = _evaluate_expression(expression, line_number, variables)
-    # Strip quotes if it's a string literal
-    if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
-        value = value[1:-1]
-    # Assign the variable
-    variables[var_name] = value
-    return None
-
-
-def _evaluate_expression(
-    expression: Union[SUPPORTED_TYPES, tuple[str, SUPPORTED_TYPES, SUPPORTED_TYPES]],
-    line_number: int,
-    variables: dict[str, SUPPORTED_TYPES],
-) -> SUPPORTED_TYPES:
-    """Evaluates the expression assigned to a variable prior to assignment."""
-    if isinstance(expression, tuple) and expression[0] in SUPPORTED_OPERATORS:
-        left = _evaluate_expression(expression[1], line_number, variables)
-        right = _evaluate_expression(expression[2], line_number, variables)
-        try:
-            float(str(left))
-            float(str(right))
-        except ValueError:
-            raise MuffinScriptSyntaxError(INVALID_EXPRESSION, line_number)
-        evaluation = SUPPORTED_OPERATORS[expression[0]](left, right)
-        if evaluation is True:
-            return "true"
-        elif evaluation is False:
-            return "false"
-        elif evaluation is None:
-            return "null"
-        else:
-            return evaluation
-    elif isinstance(expression, str):
-        if expression in variables:
-            return variables[expression]
-        else:
-            return expression
-    elif isinstance(expression, int) or isinstance(expression, float):
-        return expression
-    # If the user got here, we messed up
-    raise MuffinCrumbsError()
+    return node
