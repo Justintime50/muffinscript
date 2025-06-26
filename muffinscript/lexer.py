@@ -119,6 +119,9 @@ def tokenize(
             # Spaces
             case " ":
                 i += 1
+            # Commas
+            case ",":
+                i += 1
             # All else
             case _:
                 raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
