@@ -30,11 +30,11 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
             value = node.value[1:-1]
         else:
             value = node.value
-        return str(value)
+        return value
     elif isinstance(node, IntNode):
-        return int(node.value)
+        return node.value
     elif isinstance(node, FloatNode):
-        return float(node.value)
+        return node.value
     elif isinstance(node, BoolNode):
         return str(bool(node.value)).lower()
     elif isinstance(node, NullNode):
@@ -46,13 +46,14 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
     elif isinstance(node, CatNode):
         args_to_cat: list[str] = []
         for arg in node.args:
+            arg = str(arg)
             if arg in variables:
                 arg = variables[arg]
-            args_to_cat.append(str(evaluate(StringNode(arg, 0), variables)))
+            args_to_cat.append(str(evaluate(arg, variables)))
         return "".join(args_to_cat)
     else:
         if node in variables:
             return variables[node]
 
-    # TODO: We should be setting these back to a node
+    # TODO: Should we be setting these back to a nodes?
     return node

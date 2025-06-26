@@ -3,7 +3,6 @@ from typing import Any
 from muffinscript.ast import (
     ArithmeticNode,
     AssignNode,
-    BaseNode,
     BoolNode,
     CatNode,
     FloatNode,
@@ -57,11 +56,11 @@ def _parse_variable_tokens(
     if len(tokens) < 3:
         raise MuffinScriptSyntaxError(UNDEFINED_VARIABLE, line_number)
 
-    # Concatenation, token schema: ["cat", "(", "hello", "world", ")"]
-    elif num_tokens > 1 and tokens[0] == "cat":
-        if len(tokens) < 4 or tokens[1] != "(" or tokens[-1] != ")":
+    # Concatenation, token schema: ["foo, "=", "cat", "(", "hello ", bar, ")"]
+    elif num_tokens > 1 and tokens[2] == "cat":
+        if len(tokens) < 6 or tokens[3] != "(" or tokens[-1] != ")":
             raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
-        expression = CatNode(args=tokens[2:-1], line_number=line_number)
+        expression = CatNode(args=tokens[4:-1], line_number=line_number)
 
     # Arithmetic, token schema: ["foo", "=", 2, "+", 2]
     # TODO: Support multiple arithmetic chaining
@@ -87,8 +86,11 @@ def _parse_variable_tokens(
         elif isinstance(token, float):
             expression = FloatNode(token, line_number)
 
+    if expression is None:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+
     return AssignNode(
-        var_name=tokens[0],
+        var_name=str(tokens[0]),
         expression=expression,
         line_number=line_number,
     )
