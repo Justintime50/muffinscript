@@ -25,3 +25,27 @@ class SleepNode(BaseNode):
         super().__init__(line_number, duration)
         self.duration = duration
         self.duration = duration
+
+
+class StringCoerceNode(BaseNode):
+    """String coercion: str(42)"""
+
+    def __init__(self, value: Any, line_number: int):
+        super().__init__(line_number, value)
+        self.value = value
+
+
+class IntCoerceNode(BaseNode):
+    """Int coercion: int("42")"""
+
+    def __init__(self, value: Any, line_number: int):
+        super().__init__(line_number, value)
+        self.value = value
+
+
+class FloatCoerceNode(BaseNode):
+    """Float coercion: float("42.0")"""
+
+    def __init__(self, value: Any, line_number: int):
+        super().__init__(line_number, value)
+        self.value = value

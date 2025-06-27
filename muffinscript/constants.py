@@ -18,9 +18,10 @@ SUPPORTED_OPERATORS = {
 }
 
 # Error messages
+INVALID_COERCION = "Invalid coercion, could not convert to type"
+INVALID_CONCATENATION = "Invalid concatenation, only strings allowed"
 INVALID_EXPRESSION = "Invalid expression"
 INVALID_FLOAT = "Invalid float"
 UNDEFINED_VARIABLE = "Undefined variable"
 UNSUPPORTED_STATEMENT = "Unsupported statement"
 UNTERMINATED_STRINGS = "Unterminated string"
-INVALID_CONCATENATION = "Invalid concatenation, only strings allowed"

@@ -14,13 +14,17 @@ from muffinscript.ast import (
     StringNode,
 )
 from muffinscript.constants import (
+    INVALID_COERCION,
     INVALID_FLOAT,
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
     UNDEFINED_VARIABLE,
     UNSUPPORTED_STATEMENT,
 )
-from muffinscript.errors import MuffinScriptSyntaxError
+from muffinscript.errors import (
+    MuffinScriptRuntimeError,
+    MuffinScriptSyntaxError,
+)
 
 
 def parse_tokens(
@@ -28,6 +32,7 @@ def parse_tokens(
     line_number: int,
 ) -> Any:
     """Parses tokens before sending them to the interpreter to ensure they have no syntax errors."""
+    # TODO: These are most likely too aggressive
     # Print
     if "p" in tokens:
         return _parse_print_tokens(tokens, line_number)
@@ -37,6 +42,9 @@ def parse_tokens(
     # Sleep
     elif "sleep" in tokens:
         return _parse_sleep_tokens(tokens, line_number)
+    # Coercion
+    elif "str" in tokens or "int" in tokens or "float" in tokens:
+        return _parse_coercion_tokens(tokens, line_number)
     else:
         raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
@@ -81,6 +89,8 @@ def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode | None:
         return CatNode(
             args=[_parse_expression([token], line_number) for token in tokens[2:-1]], line_number=line_number
         )
+    elif "str" in tokens or "int" in tokens or "float" in tokens:
+        return _parse_coercion_tokens(tokens, line_number)
     elif len(tokens) == 3 and tokens[1] in SUPPORTED_OPERATORS.keys():
         # TODO: Support multiple arithmetic chaining
         return ArithmeticNode(
@@ -115,6 +125,33 @@ def _parse_sleep_tokens(
     if not isinstance(tokens[2], (str, int, float)):  # Allow str for variable names
         raise MuffinScriptSyntaxError(INVALID_FLOAT, line_number)
     return SleepNode(tokens[2], line_number)
+
+
+def _parse_coercion_tokens(
+    tokens: list[SUPPORTED_TYPES],
+    line_number: int,
+) -> BaseNode:
+    """Token schema: ["str", "(", 2, ")"] or ["int", "(", "2", ")"] or ["float", "(", "2.5", ")"]"""
+    value: Any = None
+    if tokens[0] == "str":
+        _validate_function_schema(tokens, line_number, "str", 4)
+        value = str(tokens[2])
+        return StringNode(value, line_number)
+    elif tokens[0] == "int":
+        _validate_function_schema(tokens, line_number, "int", 4)
+        try:
+            value = int(tokens[2].replace('"', ""))  # type:ignore
+        except ValueError:
+            raise MuffinScriptRuntimeError(INVALID_COERCION, line_number)
+        return IntNode(value, line_number)
+    elif tokens[0] == "float":
+        _validate_function_schema(tokens, line_number, "float", 4)
+        try:
+            value = float(tokens[2])  # type:ignore
+        except ValueError:
+            raise MuffinScriptRuntimeError(INVALID_COERCION, line_number)
+        return FloatNode(value, line_number)
+    raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
 
 def _validate_function_schema(

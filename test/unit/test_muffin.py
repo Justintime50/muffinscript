@@ -55,7 +55,7 @@ def test_main_tokenizer_error(monkeypatch, capsys):
         with pytest.raises(SystemExit):
             main()
         captured = capsys.readouterr()
-        assert "\x1b[31mERROR\x1b[0m - Unsupported statement | line: 1\n" in captured.out
+        assert "\x1b[31mSYNTAX ERROR\x1b[0m - Unsupported statement | line: 1\n" in captured.out
 
 
 def test_main_parser_error(monkeypatch, capsys):
@@ -68,4 +68,4 @@ def test_main_parser_error(monkeypatch, capsys):
         with pytest.raises(SystemExit):
             main()
         captured = capsys.readouterr()
-        assert "\x1b[31mERROR\x1b[0m - Unsupported statement | line: 1\n" in captured.out
+        assert "\x1b[31mSYNTAX ERROR\x1b[0m - Unsupported statement | line: 1\n" in captured.out

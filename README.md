@@ -29,6 +29,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Arithmetic: `+`, `-`, `*`, `/`, `%`
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
+- Type coercion: `str(2)`, `int("2")`, `float("2.5")`
 - Comments (inline and alone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
@@ -97,10 +98,10 @@ Actually executes the program by traversing the AST.
 
 ### TODO
 
-- `str`, `int`, `float` functions
 - Control flow (if, else, elseif?)
 - For loops
 - Lists
 - Functions
 - Errors
 - String interpolation
+- Imports

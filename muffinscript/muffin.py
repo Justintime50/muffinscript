@@ -2,7 +2,7 @@ import sys
 
 from muffinscript._version import __version__
 from muffinscript.errors import (
-    MuffinScriptSyntaxError,
+    MuffinScriptBaseError,
     output_error,
 )
 from muffinscript.interpreter import evaluate
@@ -38,7 +38,7 @@ def main():
         for line_number, node in executable_lines.items():
             if node:
                 evaluate(node, variables)
-    except MuffinScriptSyntaxError as error:
+    except MuffinScriptBaseError as error:
         output_error(error)
 
 
@@ -57,7 +57,7 @@ def repl():
             if tokens:
                 nodes = parse_tokens(tokens, line_number)
                 evaluate(nodes, line_number, variables)
-        except MuffinScriptSyntaxError as error:
+        except MuffinScriptBaseError as error:
             output_error(error)
         except KeyboardInterrupt:
             print("\nExiting MuffinScript REPL.")
