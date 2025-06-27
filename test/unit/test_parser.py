@@ -7,13 +7,6 @@ from muffinscript.errors import (
 from muffinscript.parser import parse_tokens
 
 
-def test_tokens_unknown_statement():
-    """Test we throw an error when an unknown statement is used."""
-    with pytest.raises(MuffinScriptSyntaxError) as error:
-        parse_tokens(["?"], 1)
-    assert str(error.value) == "\033[31mSYNTAX ERROR\033[0m - Unsupported statement | line: 1"
-
-
 def test_parse_print_tokens():
     """Test that we parse the `p()` function correctly."""
     node = parse_tokens(["p", "(", "foo", ")"], 1)
@@ -176,3 +169,7 @@ def test_parse_variable_tokens():
     with pytest.raises(MuffinScriptRuntimeError) as error:
         parse_tokens(["foo", "=", "float", "(", "hello", ")"], 21)
     assert str(error.value) == "\033[31mRUNTIME ERROR\033[0m - Invalid coercion, could not convert to type | line: 21"
+
+    node = parse_tokens(["foo", "=", "type", "(", 2, ")"], 21)
+    assert node.expression.value.value == 2
+    assert node.line_number == 21

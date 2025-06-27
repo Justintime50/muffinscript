@@ -1,7 +1,7 @@
 # import pytest
 
 # from muffinscript.errors import (
-#     MuffinCrumbsError,
+#     MuffinScriptBaseError,
 #     MuffinScriptSyntaxError,
 # )
 # from muffinscript.interpreter import evaluate
@@ -9,7 +9,7 @@
 
 # def test_evaluate_expression_muffin_crumbs():
 #     """Test we throw an error if MuffinScript didn't account for something."""
-#     with pytest.raises(MuffinCrumbsError) as error:
+#     with pytest.raises(MuffinScriptBaseError) as error:
 #         evaluate(["?"], {})
 #     assert str(error.value) == "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
 
@@ -43,7 +43,7 @@
 #     expression = evaluate(["foo", "=", '"hello world"'], {"foo": "hello world"})
 #     assert expression is None
 
-#     with pytest.raises(MuffinCrumbsError) as error:
+#     with pytest.raises(MuffinScriptBaseError) as error:
 #         evaluate(["foo", "=", ("?", "2", "2")], {})
 #     assert str(error.value) == "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
 

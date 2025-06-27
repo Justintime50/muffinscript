@@ -1,27 +1,17 @@
 import sys
+import traceback
 
 
 class MuffinScriptBaseError(Exception):
-    """Base class for all MuffinScript errors.
-
-    This is used to catch all errors related to MuffinScript.
-    It should not be used directly, but rather as a base for other errors.
-    """
-
-    def __str__(self):
-        return "An error occurred in MuffinScript."
-
-
-class MuffinCrumbsError(MuffinScriptBaseError):
     """Used if MuffinScript had an issue. If the user receives this, something broke on our end.
 
     This should be raised if we didn't account for something and serve as the backdrop for unreachable code.
-
-    This error should definitely show the stacktrace so we can track where in the language we hit a snag.
     """
 
     def __str__(self):
-        return "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
+        tb = "".join(traceback.format_tb(self.__traceback__))
+        msg = super().__str__()
+        return f"\033[31mMUFFIN OVERFLOW\033[0m - We most likely burnt something, mind following the crumbs and reporting it?\n{msg}\n{tb}"  # noqa
 
 
 class MuffinScriptSyntaxError(MuffinScriptBaseError):

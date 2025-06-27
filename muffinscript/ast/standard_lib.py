@@ -49,3 +49,11 @@ class FloatCoerceNode(BaseNode):
     def __init__(self, value: Any, line_number: int):
         super().__init__(line_number, value)
         self.value = value
+
+
+class TypeCheckNode(BaseNode):
+    """Type check: type("hello world")"""
+
+    def __init__(self, value: Any, line_number: int):
+        super().__init__(line_number, value)
+        self.value = value

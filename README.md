@@ -19,7 +19,7 @@ We should probably start with what it's not. It's NOT fast (built on Python), it
 
 It IS dead simple, it IS robust, it IS delectably little.
 
-I built MuffinScript as a POC (mostly without AI) to see if I could even build a programming language. I don't have intentions for it to become very useful, but it was super fun to build some basic programming language concepts into.
+I built **MuffinScript** as a POC (mostly without AI) to see if I could even build a programming language. I don't have intentions for it to become very useful, but it was super fun to build some basic programming language concepts into.
 
 So what's it used for? Building tiny little scripts and tools.
 
@@ -35,6 +35,7 @@ So what's it used for? Building tiny little scripts and tools.
 - REPL: Use `muffin` to enter
 - Standard library
   - Print to console: `p("hello world")`
+  - Type checking: `type("hello world")`
   - String concatenation: `cat("hello ", bar)`
   - Sleep: `sleep(100.5)`
 

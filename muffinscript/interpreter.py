@@ -13,10 +13,13 @@ from muffinscript.ast import (
     SleepNode,
     StringNode,
 )
+from muffinscript.ast.standard_lib import TypeCheckNode
 from muffinscript.constants import (
+    PYTHON_TO_MUFFIN_TYPES,
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
 )
+from muffinscript.errors import MuffinScriptBaseError
 
 
 def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPES:
@@ -43,6 +46,12 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
         return "".join([arg.value for arg in node.args])
     elif isinstance(node, SleepNode):
         time.sleep(evaluate(node.duration, variables))  # type:ignore
+    elif isinstance(node, TypeCheckNode):
+        python_type = type(evaluate(node.value, variables))
+        muffin_type = PYTHON_TO_MUFFIN_TYPES.get(python_type)
+        if muffin_type is None:
+            raise MuffinScriptBaseError()
+        return muffin_type
     else:
         if node in variables:
             return variables[node]

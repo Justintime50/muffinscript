@@ -7,6 +7,7 @@ from muffinscript.ast.standard_lib import (
     FloatCoerceNode,
     IntCoerceNode,
     StringCoerceNode,
+    TypeCheckNode,
 )
 
 
@@ -43,4 +44,10 @@ def test_int_coerce_node():
 def test_float_coerce_node():
     node = FloatCoerceNode(value=2.5, line_number=1)
     assert node.value == 2.5
+    assert node.line_number == 1
+
+
+def test_type_check_node():
+    node = TypeCheckNode(value="hello", line_number=1)
+    assert node.value == "hello"
     assert node.line_number == 1

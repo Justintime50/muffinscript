@@ -1,7 +1,7 @@
 import pytest
 
 from muffinscript.errors import (
-    MuffinCrumbsError,
+    MuffinScriptBaseError,
     MuffinScriptSyntaxError,
     output_error,
 )
@@ -9,8 +9,11 @@ from muffinscript.errors import (
 
 def test_muffin_crumbs_error():
     """Test that we return the correct error message."""
-    error = MuffinCrumbsError()
-    assert str(error) == "Oh crumbs, Muffin had an issue! We most likely burnt something, not you."
+    error = MuffinScriptBaseError()
+    assert (
+        str(error)
+        == "\033[31mMUFFIN OVERFLOW\033[0m - We most likely burnt something, mind following the crumbs and reporting it?\n\n"  # noqa
+    )
 
 
 def test_program_syntax_error_string():
