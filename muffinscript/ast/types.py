@@ -1,17 +1,10 @@
 from .base import BaseNode
 
 
-class StringNode(BaseNode):
-    """Strings: 'hello world'"""
+class BoolNode(BaseNode):
+    """Booleans: true"""
 
     def __init__(self, value: str, line_number: int):
-        super().__init__(line_number, value)
-
-
-class IntNode(BaseNode):
-    """Integers: 42"""
-
-    def __init__(self, value: int, line_number: int):
         super().__init__(line_number, value)
 
 
@@ -22,8 +15,15 @@ class FloatNode(BaseNode):
         super().__init__(line_number, value)
 
 
-class BoolNode(BaseNode):
-    """Booleans: true"""
+class IntNode(BaseNode):
+    """Integers: 42"""
+
+    def __init__(self, value: int, line_number: int):
+        super().__init__(line_number, value)
+
+
+class StringNode(BaseNode):
+    """Strings: 'hello world'"""
 
     def __init__(self, value: str, line_number: int):
         super().__init__(line_number, value)
