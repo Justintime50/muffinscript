@@ -36,3 +36,12 @@ class ArithmeticNode(BaseNode):
         self.right = right
         self.left = left
         self.right = right
+
+
+class IfNode(BaseNode):
+    """If statement: if (foo == bar) { ... }"""
+
+    def __init__(self, condition: Any, body: list[Any], line_number: int):
+        super().__init__(line_number)
+        self.condition = condition
+        self.body = body

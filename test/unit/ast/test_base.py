@@ -3,6 +3,7 @@ from muffinscript.ast import (
     AssignNode,
     BaseNode,
 )
+from muffinscript.ast.base import IfNode
 
 
 def test_base_node():
@@ -22,4 +23,11 @@ def test_arithmetic_node():
     assert node.operator == "+"
     assert node.left == 2
     assert node.right == 3
+    assert node.line_number == 1
+
+
+def test_if_node():
+    node = IfNode(condition="foo == bar", body=["p", "(", "true", ")"], line_number=1)
+    assert node.condition == "foo == bar"
+    assert node.body == ["p", "(", "true", ")"]
     assert node.line_number == 1

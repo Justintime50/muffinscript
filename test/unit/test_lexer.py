@@ -60,3 +60,6 @@ def test_tokenizer():
     with pytest.raises(MuffinScriptSyntaxError) as error:
         tokenize('p("hello world)', 17)
     assert str(error.value) == "\033[31mSYNTAX ERROR\033[0m - Unterminated string | line: 17"
+
+    tokens = tokenize("if (foo == bar) { p(true) }", 18)
+    assert tokens == ["if", "(", "foo", "==", "bar", ")", "{", "p", "(", True, ")", "}"]

@@ -30,6 +30,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
 - Type coercion: `str(2)`, `int("2")`, `float("2.5")`
+- If statements: `if (foo == bar) { ... }`
 - Comments (inline and alone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
@@ -43,8 +44,6 @@ So what's it used for? Building tiny little scripts and tools.
 
 Create a `filename.ms` file and start coding with `muffin filename.ms`.
 
-- Everything must be assigned to a variable to evaluate (forces explicit self-documenting code).
-
 ```ms
 // Variable assignment and printing
 foo = "hello world"
@@ -55,6 +54,11 @@ p(2 + 2.5)
 
 // Concatenate strings
 p(cat("I say ", foo))
+
+// If statements
+if (foo == bar) {
+    p(true)
+}
 ```
 
 Commands:
@@ -99,10 +103,11 @@ Actually executes the program by traversing the AST.
 
 ### TODO
 
-- Control flow (if, else, elseif?)
+- Control flow (missing: else)
 - For loops
 - Lists
 - Functions
 - Errors
 - String interpolation
 - Imports
+- Debug mode for Muffinscript that does expose Python stacktraces

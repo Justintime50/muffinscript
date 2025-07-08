@@ -13,6 +13,7 @@ from muffinscript.ast import (
     SleepNode,
     StringNode,
 )
+from muffinscript.ast.base import IfNode
 from muffinscript.ast.standard_lib import TypeCheckNode
 from muffinscript.constants import (
     INVALID_COERCION,
@@ -43,6 +44,9 @@ def parse_tokens(
     # Sleep
     elif "sleep" == tokens[0]:
         return _parse_sleep_tokens(tokens, line_number)
+    # If statements
+    elif "if" == tokens[0]:
+        return _parse_if_tokens(tokens, line_number)
     # All other expressions that need evaluation
     else:
         return _parse_expression(tokens, line_number)
@@ -88,6 +92,37 @@ def _parse_sleep_tokens(
     if not isinstance(tokens[2], (str, int, float)):  # Allow str for variable names
         raise MuffinScriptSyntaxError(INVALID_FLOAT, line_number)
     return SleepNode(tokens[2], line_number)
+
+
+def _parse_if_tokens(
+    tokens: list[SUPPORTED_TYPES],
+    line_number: int,
+) -> BaseNode:
+    """Token schema: ["if", "(", "foo", "=", "bar", ")", "{", ...]
+
+    Note that if statement tokens may not occur on the same line because the opening and closing brackets
+    could occur on different lines.
+    """
+    if tokens[0] != "if" or len(tokens) < 4 or tokens[1] != "(" or ")" not in tokens or "{" not in tokens:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+
+    # Condition
+    condition = None
+    open_paren_idx = next((i for i, token in enumerate(tokens) if token == "("), None)  # nosec
+    close_paren_idx = next((i for i, token in enumerate(tokens) if token == ")"), None)  # nosec
+    if open_paren_idx is not None and close_paren_idx is not None and close_paren_idx > open_paren_idx:
+        inner_tokens = tokens[open_paren_idx + 1 : close_paren_idx]
+        condition = parse_tokens(inner_tokens, line_number)
+
+    # Body
+    body = []
+    open_body_idx = next((i for i, token in enumerate(tokens) if token == "{"), None)  # nosec
+    close_body_idx = next((i for i, token in enumerate(tokens) if token == "}"), None)  # nosec
+    if open_body_idx is not None and close_body_idx is not None and close_body_idx > open_body_idx:
+        inner_tokens = tokens[open_body_idx + 1 : close_body_idx]
+        body.append(parse_tokens(inner_tokens, line_number))
+
+    return IfNode(condition, body, line_number)
 
 
 def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode:

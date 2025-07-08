@@ -173,3 +173,10 @@ def test_parse_variable_tokens():
     node = parse_tokens(["foo", "=", "type", "(", 2, ")"], 21)
     assert node.expression.value.value == 2
     assert node.line_number == 21
+
+    node = parse_tokens(["if", "(", "foo", "==", "bar", ")", "{", "p", "(", "true", ")", "}"], 22)
+    assert node.condition.operator == "=="
+    assert node.condition.left == "foo"
+    assert node.condition.right == "bar"
+    assert node.body[0].value == "true"
+    assert node.line_number == 22

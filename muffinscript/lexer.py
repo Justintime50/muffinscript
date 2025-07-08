@@ -68,6 +68,12 @@ def tokenize(
             case ")":
                 tokens.append(")")
                 i += 1
+            case "{":
+                tokens.append("{")
+                i += 1
+            case "}":
+                tokens.append("}")
+                i += 1
             # Arithmetic Operators
             case "+":
                 tokens.append("+")
@@ -118,6 +124,8 @@ def tokenize(
                     i += 1
             # Spaces
             case " ":
+                i += 1
+            case "\t":
                 i += 1
             # Commas
             case ",":
