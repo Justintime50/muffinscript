@@ -38,10 +38,10 @@ def tokenize(
                 else:
                     tokens.append(phrase)
             # Strings
-            case '"':
+            case _ if char == '"' or char == "'":
                 start = i + 1
                 end = start
-                while end < len(stripped_input) and stripped_input[end] != '"':
+                while end < len(stripped_input) and (stripped_input[end] != '"' and stripped_input[end] != "'"):
                     end += 1
                 if end >= len(stripped_input):
                     raise MuffinScriptSyntaxError(UNTERMINATED_STRINGS, line_number)

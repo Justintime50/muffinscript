@@ -63,3 +63,8 @@ def test_tokenizer():
 
     tokens = tokenize("if (foo == bar) { p(true) }", 18)
     assert tokens == ["if", "(", "foo", "==", "bar", ")", "{", "p", "(", True, ")", "}"]
+
+    tokens = tokenize("if (foo == bar) { p(true) } else { p(false) }", 19)
+    # fmt: off
+    assert tokens == ["if", "(", "foo", "==", "bar", ")", "{", "p", "(", True, ")", "}", "else", "{", "p", "(", False, ")", "}"]  # noqa
+    # fmt: on

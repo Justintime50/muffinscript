@@ -180,3 +180,14 @@ def test_parse_variable_tokens():
     assert node.condition.right == "bar"
     assert node.body[0].value == "true"
     assert node.line_number == 22
+
+    node = parse_tokens(
+        ["if", "(", "foo", "==", "bar", ")", "{", "p", "(", "true", ")", "}", "else", "{", "p", "(", "false", ")", "}"],
+        23,
+    )
+    assert node.condition.operator == "=="
+    assert node.condition.left == "foo"
+    assert node.condition.right == "bar"
+    assert node.body[0].value == "true"
+    assert node.else_body[0].value == "false"
+    assert node.line_number == 23

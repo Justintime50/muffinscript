@@ -48,3 +48,8 @@ def output_error(message: str):
     """Don't print stacktrace, just print message to console and exit."""
     print(message)
     sys.exit(1)
+
+
+def output_repl_error(message: str):
+    """Don't print stacktrace, just print message to console."""
+    print(message)

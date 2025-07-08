@@ -1,8 +1,18 @@
 import operator
 
 
-# Supported types
+# Supported constants
 SUPPORTED_TYPES = str | int | float | bool | None
+SUPPORTED_STATEMENTS = set(
+    [
+        "cat",
+        "else",
+        "if",
+        "p",
+        "sleep",
+        "type",
+    ]
+)
 SUPPORTED_OPERATORS = {
     "+": operator.add,
     "-": operator.sub,
@@ -16,6 +26,8 @@ SUPPORTED_OPERATORS = {
     "<": operator.lt,
     "<=": operator.le,
 }
+
+# Mappings
 PYTHON_TO_MUFFIN_TYPES = {
     str: "str",
     int: "int",

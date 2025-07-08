@@ -4,6 +4,7 @@ from muffinscript._version import __version__
 from muffinscript.errors import (
     MuffinScriptBaseError,
     output_error,
+    output_repl_error,
 )
 from muffinscript.interpreter import evaluate
 from muffinscript.lexer import tokenize
@@ -25,14 +26,44 @@ def main():
     executable_lines = {}  # Stores key as line number, value as executable line (if valid)
 
     try:
-        for i, line in enumerate(code):
+        i = 0
+        while i < len(code):
+            line = code[i]
             line_number = i + 1
-            executable_lines[str(line_number)] = None
-
             tokens = tokenize(line, line_number)
-            if tokens:
+            # If this line starts an if statement, buffer until the block(s) close
+            if tokens and tokens[0] == "if":
+                block_tokens = tokens[:]
+                open_braces = tokens.count("{")
+                close_braces = tokens.count("}")
+                # Keep reading lines until all blocks are closed
+                while open_braces > close_braces and i + 1 < len(code):
+                    i += 1
+                    next_tokens = tokenize(code[i], i + 1)
+                    block_tokens.extend(next_tokens)
+                    open_braces += next_tokens.count("{")
+                    close_braces += next_tokens.count("}")
+                # Check for else after if block
+                if i + 1 < len(code):
+                    next_line_tokens = tokenize(code[i + 1], i + 2)
+                    if next_line_tokens and next_line_tokens[0] == "else":
+                        i += 1
+                        block_tokens.extend(next_line_tokens)
+                        open_braces += next_line_tokens.count("{")
+                        close_braces += next_line_tokens.count("}")
+                        # Buffer else block
+                        while open_braces > close_braces and i + 1 < len(code):
+                            i += 1
+                            next_tokens = tokenize(code[i], i + 1)
+                            block_tokens.extend(next_tokens)
+                            open_braces += next_tokens.count("{")
+                            close_braces += next_tokens.count("}")
+                nodes = parse_tokens(block_tokens, line_number)
+                executable_lines[str(line_number)] = nodes
+            elif tokens:
                 nodes = parse_tokens(tokens, line_number)
                 executable_lines[str(line_number)] = nodes
+            i += 1
 
         # Only evaluate code once the entire file has been tokenized and parsed correctly
         for line_number, node in executable_lines.items():
@@ -58,7 +89,7 @@ def repl():
                 nodes = parse_tokens(tokens, line_number)
                 evaluate(nodes, line_number, variables)
         except MuffinScriptBaseError as error:
-            output_error(error)
+            output_repl_error(error)
         except KeyboardInterrupt:
             print("\nExiting MuffinScript REPL.")
             break

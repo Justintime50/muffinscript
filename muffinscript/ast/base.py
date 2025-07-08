@@ -41,7 +41,8 @@ class ArithmeticNode(BaseNode):
 class IfNode(BaseNode):
     """If statement: if (foo == bar) { ... }"""
 
-    def __init__(self, condition: Any, body: list[Any], line_number: int):
+    def __init__(self, condition: Any, body: list[Any], line_number: int, else_body: list[Any] = []):
         super().__init__(line_number)
         self.condition = condition
         self.body = body
+        self.else_body = else_body

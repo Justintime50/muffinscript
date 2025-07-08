@@ -19,6 +19,7 @@ from muffinscript.constants import (
     INVALID_COERCION,
     INVALID_FLOAT,
     SUPPORTED_OPERATORS,
+    SUPPORTED_STATEMENTS,
     SUPPORTED_TYPES,
     UNDEFINED_VARIABLE,
     UNSUPPORTED_STATEMENT,
@@ -58,7 +59,14 @@ def _parse_print_tokens(
 ) -> PrintNode:
     """Token schema: ["p", "(", "foo", ")"]"""
     _validate_function_schema(tokens, line_number, "p", 4)
-    if len(tokens) == 4 and isinstance(tokens[2], str):
+    if (
+        len(tokens) == 4
+        and isinstance(tokens[2], str)
+        and not tokens[2].startswith('"')
+        and not tokens[2].endswith('"')
+        and not tokens[2].startswith("'")
+        and not tokens[2].endswith("'")
+    ):
         # Using a variable
         expression: Any = tokens[2]
     else:
@@ -103,7 +111,7 @@ def _parse_if_tokens(
     Note that if statement tokens may not occur on the same line because the opening and closing brackets
     could occur on different lines.
     """
-    if tokens[0] != "if" or len(tokens) < 4 or tokens[1] != "(" or ")" not in tokens or "{" not in tokens:
+    if tokens[0] != "if" or tokens[1] != "(" or ")" not in tokens or "{" not in tokens or "}" not in tokens:
         raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
     # Condition
@@ -120,9 +128,56 @@ def _parse_if_tokens(
     close_body_idx = next((i for i, token in enumerate(tokens) if token == "}"), None)  # nosec
     if open_body_idx is not None and close_body_idx is not None and close_body_idx > open_body_idx:
         inner_tokens = tokens[open_body_idx + 1 : close_body_idx]
-        body.append(parse_tokens(inner_tokens, line_number))
+        # Split inner_tokens into statements (assuming each statement starts with a known keyword or pattern)
+        i = 0
+        while i < len(inner_tokens):
+            # Find the end of the current statement
+            if inner_tokens[i] in SUPPORTED_STATEMENTS or (i + 1 < len(inner_tokens) and inner_tokens[i + 1] == "="):
+                # Find closing parenthesis for function calls
+                if "(" in inner_tokens[i:]:
+                    open_paren = i + inner_tokens[i:].index("(")
+                    close_paren = open_paren + inner_tokens[open_paren:].index(")")
+                    stmt_tokens = inner_tokens[i : close_paren + 1]
+                    body.append(parse_tokens(stmt_tokens, line_number))
+                    i = close_paren + 1
+                else:
+                    # Assignment or other statement
+                    stmt_tokens = inner_tokens[i : i + 3]
+                    body.append(parse_tokens(stmt_tokens, line_number))
+                    i += 3
+            else:
+                i += 1
 
-    return IfNode(condition, body, line_number)
+    # Else body (optional)
+    else_body = []
+    if "else" in tokens:
+        else_idx = tokens.index("else")
+        if "{" in tokens[else_idx:]:
+            open_else_idx = next((i for i, token in enumerate(tokens[else_idx:]) if token == "{"), None)  # nosec
+            close_else_idx = next((i for i, token in enumerate(tokens[else_idx:]) if token == "}"), None)  # nosec
+            if open_else_idx is not None and close_else_idx is not None and close_else_idx > open_else_idx:
+                inner_tokens = tokens[else_idx + open_else_idx + 1 : else_idx + close_else_idx]
+                # Parse multiple statements in else body
+                i = 0
+                while i < len(inner_tokens):
+                    if inner_tokens[i] in SUPPORTED_STATEMENTS or (
+                        i + 1 < len(inner_tokens) and inner_tokens[i + 1] == "="
+                    ):
+                        # Find closing parenthesis for function calls
+                        if "(" in inner_tokens[i:]:
+                            open_paren = i + inner_tokens[i:].index("(")
+                            close_paren = open_paren + inner_tokens[open_paren:].index(")")
+                            stmt_tokens = inner_tokens[i : close_paren + 1]
+                            else_body.append(parse_tokens(stmt_tokens, line_number))
+                            i = close_paren + 1
+                        else:
+                            stmt_tokens = inner_tokens[i : i + 3]
+                            else_body.append(parse_tokens(stmt_tokens, line_number))
+                            i += 3
+                    else:
+                        i += 1
+
+    return IfNode(condition, body, line_number, else_body)
 
 
 def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode:

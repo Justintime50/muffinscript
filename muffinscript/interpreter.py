@@ -26,15 +26,7 @@ from muffinscript.errors import MuffinScriptBaseError
 def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPES:
     """Evaluates tokens to determine what to run."""
     if isinstance(node, PrintNode):
-        result = evaluate(node.value, variables)
-        if result is True:
-            print("true")
-        elif result is False:
-            print("false")
-        elif result is None:
-            print("null")
-        else:
-            print(result)
+        print(evaluate(node.value, variables))
     elif isinstance(node, AssignNode):
         variables[node.var_name] = evaluate(node.expression, variables)
     elif isinstance(node, StringNode):
@@ -46,7 +38,7 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
     elif isinstance(node, BoolNode):
         return node.value
     elif isinstance(node, NullNode):
-        return "null"
+        return node.value
     elif isinstance(node, ArithmeticNode):
         left = evaluate(node.left, variables)
         right = evaluate(node.right, variables)
@@ -65,6 +57,9 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
         condition = evaluate(node.condition, variables)
         if condition:
             for statement in node.body:
+                evaluate(statement, variables)
+        elif node.else_body:
+            for statement in node.else_body:
                 evaluate(statement, variables)
     else:
         if node in variables:

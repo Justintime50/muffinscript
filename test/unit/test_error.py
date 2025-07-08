@@ -4,6 +4,7 @@ from muffinscript.errors import (
     MuffinScriptBaseError,
     MuffinScriptSyntaxError,
     output_error,
+    output_repl_error,
 )
 
 
@@ -30,4 +31,11 @@ def test_output_error(capfd):
     assert error.value.code == 1
     out, err = capfd.readouterr()
     assert test_message in out
+
+
+def test_output_repl_error(capfd):
+    """Test that we print the error message."""
+    test_message = "Mock error"
+    output_repl_error(test_message)
+    out, err = capfd.readouterr()
     assert test_message in out
