@@ -17,3 +17,4 @@
   - Type checking: `type("hello world")`
   - String concatenation: `cat("hello ", bar)`
   - Sleep: `sleep(10.5)`
+- Debug mode by passing `MUFFIN_DEBUG=true`

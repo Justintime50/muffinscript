@@ -1,6 +1,7 @@
 import sys
 
 from muffinscript._version import __version__
+from muffinscript.constants import MUFFIN_DEBUG
 from muffinscript.errors import (
     MuffinScriptBaseError,
     output_error,
@@ -70,7 +71,10 @@ def main():
             if node:
                 evaluate(node, variables)
     except MuffinScriptBaseError as error:
-        output_error(error)
+        if MUFFIN_DEBUG:
+            raise error
+        else:
+            output_error(error)
 
 
 def repl():

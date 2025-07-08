@@ -1,5 +1,9 @@
 import operator
+import os
 
+
+# Env Vars
+MUFFIN_DEBUG = os.getenv("MUFFIN_DEBUG")
 
 # Supported constants
 SUPPORTED_TYPES = str | int | float | bool | None

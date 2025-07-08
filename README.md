@@ -40,6 +40,7 @@ So what's it used for? Building tiny little scripts and tools.
   - Type checking: `type("hello world")`
   - String concatenation: `cat("hello ", bar)`
   - Sleep: `sleep(10.5)`
+- Debug mode by passing `MUFFIN_DEBUG=true`
 
 ## Usage
 
@@ -104,7 +105,7 @@ Actually executes the program by traversing the AST.
 
 ### TODO
 
-- Printing strings is including the quotes again?
+- Muffinscript is Turing Complete
 - Multiline commands in repl (testing of repl)
 - For loops
 - Lists
@@ -112,4 +113,4 @@ Actually executes the program by traversing the AST.
 - Errors
 - String interpolation
 - Imports
-- Debug mode for Muffinscript that does expose Python stacktraces
+- BUG: You can define a "variable" standalone with no assignment and the parser accepts it without throwing an error
