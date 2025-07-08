@@ -19,7 +19,7 @@ We should probably start with what it's not. It's NOT fast (built on Python), it
 
 It IS dead simple, it IS robust, it IS delectably little.
 
-I built **MuffinScript** as a POC (mostly without AI) to see if I could even build a programming language. I don't have intentions for it to become very useful, but it was super fun to build some basic programming language concepts into.
+I built **MuffinScript** as a POC (mostly without AI) to see if I could even build a **Turing Complete** programming language. I don't have intentions for it to become very useful, but it was super fun to build some basic programming language concepts into.
 
 So what's it used for? Building tiny little scripts and tools.
 
@@ -29,6 +29,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Arithmetic: `+`, `-`, `*`, `/`, `%`
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
+- String interpolation: `foo = "hello #{bar}"`
 - Type coercion: `str(2)`, `int("2")`, `float("2.5")`
 - If statements: `if (foo == bar) { ... }`
 - Else statements `{ ... } else { ... }`
@@ -43,8 +44,6 @@ So what's it used for? Building tiny little scripts and tools.
 - Debug mode by passing `MUFFIN_DEBUG=true`
 
 ## Usage
-
-Create a `filename.ms` file and start coding with `muffin filename.ms`.
 
 ```ms
 // Variable assignment and printing
@@ -66,6 +65,9 @@ if (foo == bar) {
 Commands:
 
 ```sh
+# Run the Muffin interpreter on a Muffinscript file
+muffin filename.ms
+
 # REPL
 muffin
 
@@ -111,6 +113,7 @@ Actually executes the program by traversing the AST.
 - Lists
 - Functions
 - Errors
-- String interpolation
 - Imports
 - BUG: You can define a "variable" standalone with no assignment and the parser accepts it without throwing an error
+- BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
+- BUG: variable assignment inside if statements

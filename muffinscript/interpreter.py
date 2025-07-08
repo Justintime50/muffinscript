@@ -1,3 +1,4 @@
+import re
 import time
 from typing import Any
 
@@ -19,8 +20,12 @@ from muffinscript.constants import (
     PYTHON_TO_MUFFIN_TYPES,
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
+    UNDEFINED_VARIABLE,
 )
-from muffinscript.errors import MuffinScriptBaseError
+from muffinscript.errors import (
+    MuffinScriptBaseError,
+    MuffinScriptRuntimeError,
+)
 
 
 def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPES:
@@ -30,6 +35,15 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES]) -> SUPPORTED_TYPE
     elif isinstance(node, AssignNode):
         variables[node.var_name] = evaluate(node.expression, variables)
     elif isinstance(node, StringNode):
+        # String interpolation
+        variables_to_replace = re.findall(r"#\{(.*?)}", str(node.value))
+        if variables_to_replace:
+            for var in variables_to_replace:
+                if var in variables:
+                    node.value = str(node.value).replace(f"#{{{var}}}", str(variables[var]))
+                else:
+                    # TODO: We don't have the line number here
+                    raise MuffinScriptRuntimeError(UNDEFINED_VARIABLE, 0)
         return node.value
     elif isinstance(node, IntNode):
         return node.value

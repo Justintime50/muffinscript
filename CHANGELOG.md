@@ -6,6 +6,7 @@
 - Arithmetic: `+`, `-`, `*`, `/`, `%`
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
+- String interpolation: `foo = "hello #{bar}"`
 - Type coercion: `str(2)`, `int("2")`, `float("2.5")`
 - If statements: `if (foo == bar) { ... }`
 - Else statements `{ ... } else { ... }`
