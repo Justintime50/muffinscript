@@ -69,7 +69,7 @@ def main():
         # Only evaluate code once the entire file has been tokenized and parsed correctly
         for line_number, node in executable_lines.items():
             if node:
-                evaluate(node, variables)
+                evaluate(node, variables, line_number)
     except MuffinScriptBaseError as error:
         if MUFFIN_DEBUG:
             raise error
