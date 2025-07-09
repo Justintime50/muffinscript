@@ -45,6 +45,9 @@ So what's it used for? Building tiny little scripts and tools.
 
 ## Usage
 
+- Variables are global
+- Functions are public
+
 ```ms
 // Variable assignment and printing
 foo = "hello world"
@@ -114,6 +117,10 @@ Actually executes the program by traversing the AST.
 - Functions
 - Errors
 - Imports
+- Package manager (StudMuffin)
+  - Call the directory packages are stored `oven` and the packages `ingredients`
+  - Use GitHub as source of packages
 - BUG: You can define a "variable" standalone with no assignment and the parser accepts it without throwing an error
 - BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
 - BUG: variable assignment inside if statements
+- BUG: Printing undefined variables just prints the variable name
