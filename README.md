@@ -110,17 +110,22 @@ Actually executes the program by traversing the AST.
 
 ### TODO
 
-- Muffinscript is Turing Complete
-- Multiline commands in repl (testing of repl)
-- For loops
-- Lists
-- Functions
-- Errors
-- Imports
-- Package manager (StudMuffin)
-  - Call the directory packages are stored `oven` and the packages `ingredients`
-  - Use GitHub as source of packages
+#### v0.1.0
+
 - BUG: You can define a "variable" standalone with no assignment and the parser accepts it without throwing an error
 - BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
 - BUG: variable assignment inside if statements
 - BUG: Printing undefined variables just prints the variable name
+- Muffinscript is Turing Complete
+- Multiline commands in repl (testing of repl)
+- For loops
+- Lists
+
+#### Future
+
+- Functions
+- Error handling
+- Imports
+- Package manager (StudMuffin)
+  - Call the directory packages are stored `oven` and the packages `ingredients`
+  - Use GitHub as source of packages
