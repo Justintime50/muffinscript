@@ -117,7 +117,6 @@ Actually executes the program by traversing the AST.
 - BUG: variable assignment inside if statements
 - BUG: Printing undefined variables just prints the variable name
 - Muffinscript is Turing Complete
-- Multiline commands in repl (testing of repl)
 - For loops
 - Lists
 
