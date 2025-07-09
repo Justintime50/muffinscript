@@ -34,8 +34,10 @@ def parse_tokens(
     tokens: list[SUPPORTED_TYPES],
     line_number: int,
 ) -> Any:
-    """Parses tokens before sending them to the interpreter to ensure they have no syntax errors."""
-    # We begin by parsing top-level statements, if we can't match one we start parsing expressions.
+    """Parses tokens before sending them to the interpreter to ensure they have no syntax errors.
+
+    We begin by parsing top-level statements, if we can't match one we start parsing expressions.
+    """
     # Print
     if "p" == tokens[0]:
         return _parse_print_tokens(tokens, line_number)
@@ -111,9 +113,6 @@ def _parse_if_tokens(
     Note that if statement tokens may not occur on the same line because the opening and closing brackets
     could occur on different lines.
     """
-    if tokens[0] != "if" or tokens[1] != "(" or ")" not in tokens or "{" not in tokens or "}" not in tokens:
-        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
-
     # Condition
     condition = None
     open_paren_idx = next((i for i, token in enumerate(tokens) if token == "("), None)  # nosec
@@ -121,6 +120,8 @@ def _parse_if_tokens(
     if open_paren_idx is not None and close_paren_idx is not None and close_paren_idx > open_paren_idx:
         inner_tokens = tokens[open_paren_idx + 1 : close_paren_idx]
         condition = parse_tokens(inner_tokens, line_number)
+    else:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
     # Body
     body = []
@@ -147,6 +148,8 @@ def _parse_if_tokens(
                     i += 3
             else:
                 i += 1
+    else:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
     # Else body (optional)
     else_body = []
@@ -176,6 +179,8 @@ def _parse_if_tokens(
                             i += 3
                     else:
                         i += 1
+            else:
+                raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
     return IfNode(condition, body, line_number, else_body)
 
@@ -225,25 +230,26 @@ def _parse_coercion_tokens(
 ) -> BaseNode:
     """Token schema: ["str", "(", 2, ")"] or ["int", "(", "2", ")"] or ["float", "(", "2.5", ")"]"""
     value: Any = None
-    if tokens[0] == "str":
-        _validate_function_schema(tokens, line_number, "str", 4)
-        value = str(tokens[2])
-        return StringNode(value, line_number)
-    elif tokens[0] == "int":
+    coercion: BaseNode
+    if tokens[0] == "int":
         _validate_function_schema(tokens, line_number, "int", 4)
         try:
             value = int(tokens[2].replace('"', ""))  # type:ignore
         except ValueError:
             raise MuffinScriptRuntimeError(INVALID_COERCION, line_number)
-        return IntNode(value, line_number)
+        coercion = IntNode(value, line_number)
     elif tokens[0] == "float":
         _validate_function_schema(tokens, line_number, "float", 4)
         try:
             value = float(tokens[2])  # type:ignore
         except ValueError:
             raise MuffinScriptRuntimeError(INVALID_COERCION, line_number)
-        return FloatNode(value, line_number)
-    raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+        coercion = FloatNode(value, line_number)
+    else:
+        _validate_function_schema(tokens, line_number, "str", 4)
+        value = str(tokens[2])
+        coercion = StringNode(value, line_number)
+    return coercion
 
 
 def _parse_type_check_tokens(
