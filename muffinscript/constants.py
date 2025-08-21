@@ -48,3 +48,5 @@ INVALID_FLOAT = "Invalid float"
 UNDEFINED_VARIABLE = "Undefined variable"
 UNSUPPORTED_STATEMENT = "Unsupported statement"
 UNTERMINATED_STRINGS = "Unterminated string"
+
+RESERVED_KEYWORDS = set(SUPPORTED_STATEMENTS) | set(PYTHON_TO_MUFFIN_TYPES.values())

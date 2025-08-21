@@ -18,6 +18,7 @@ from muffinscript.ast.standard_lib import TypeCheckNode
 from muffinscript.constants import (
     INVALID_COERCION,
     INVALID_FLOAT,
+    RESERVED_KEYWORDS,
     SUPPORTED_OPERATORS,
     SUPPORTED_STATEMENTS,
     SUPPORTED_TYPES,
@@ -85,6 +86,8 @@ def _parse_variable_tokens(
     expression: Any = None
     if len(tokens) < 3:
         raise MuffinScriptSyntaxError(UNDEFINED_VARIABLE, line_number)
+    elif tokens[0] in RESERVED_KEYWORDS:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
     expression = parse_tokens(tokens[2:], line_number)
     return AssignNode(
         var_name=str(tokens[0]),

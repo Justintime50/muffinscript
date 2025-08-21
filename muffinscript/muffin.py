@@ -1,9 +1,13 @@
 import sys
 
 from muffinscript._version import __version__
-from muffinscript.constants import MUFFIN_DEBUG
+from muffinscript.constants import (
+    MUFFIN_DEBUG,
+    UNDEFINED_VARIABLE,
+)
 from muffinscript.errors import (
     MuffinScriptBaseError,
+    MuffinScriptRuntimeError,
     output_error,
     output_repl_error,
 )
@@ -102,9 +106,15 @@ def _run_code_block(code_lines, variables, start_line=1):
                 block_tokens.extend(next_tokens)
                 open_braces += next_tokens.count("{")
                 close_braces += next_tokens.count("}")
+            # Variables must have assignment
+            if len(tokens) == 1 and isinstance(tokens[0], str):
+                raise MuffinScriptRuntimeError(UNDEFINED_VARIABLE, line_number)
             nodes = parse_tokens(block_tokens, line_number)
             executable_lines[str(line_number)] = nodes
         elif tokens:
+            # Variables must have assignment
+            if len(tokens) == 1 and isinstance(tokens[0], str):
+                raise MuffinScriptRuntimeError(UNDEFINED_VARIABLE, line_number)
             nodes = parse_tokens(tokens, line_number)
             executable_lines[str(line_number)] = nodes
         i += 1

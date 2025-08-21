@@ -74,8 +74,13 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES], line_number: int)
         elif node.else_body:
             for statement in node.else_body:
                 evaluate(statement, variables, line_number)
+    elif node in variables:
+        return variables[node]
+    elif isinstance(node, str):
+        # If we got here, we have an undefined variable
+        raise MuffinScriptRuntimeError(UNDEFINED_VARIABLE, line_number)
     else:
-        if node in variables:
-            return variables[node]
+        # If we got here, it's a passthrough Python type and we move on
+        pass
 
     return node

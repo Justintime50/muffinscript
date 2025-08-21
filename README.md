@@ -39,7 +39,7 @@ So what's it used for? Building tiny little scripts and tools.
 - Standard library
   - Print to console: `p("hello world")`
   - Type checking: `type("hello world")`
-  - String concatenation: `cat("hello ", bar)`
+  - String concatenation: `cat("hello ", foo)`
   - Sleep: `sleep(10.5)`
 - Debug mode by passing `MUFFIN_DEBUG=true`
 
@@ -112,13 +112,10 @@ Actually executes the program by traversing the AST.
 
 #### v0.1.0
 
-- BUG: You can define a "variable" standalone with no assignment and the parser accepts it without throwing an error
 - BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
-- BUG: variable assignment inside if statements
-- BUG: Printing undefined variables just prints the variable name
 - Muffinscript is Turing Complete
-- For loops
-- Lists
+  - For loops
+  - Lists
 
 #### Future
 
