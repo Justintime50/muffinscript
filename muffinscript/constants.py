@@ -6,7 +6,7 @@ import os
 MUFFIN_DEBUG = os.getenv("MUFFIN_DEBUG")
 
 # Supported constants
-SUPPORTED_TYPES = str | int | float | bool | None
+SUPPORTED_TYPES = str | int | float | bool | list | None
 SUPPORTED_STATEMENTS = set(
     [
         "cat",
@@ -37,6 +37,7 @@ PYTHON_TO_MUFFIN_TYPES = {
     int: "int",
     float: "float",
     bool: "bool",
+    list: "list",
     type(None): "null",
 }
 

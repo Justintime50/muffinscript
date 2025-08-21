@@ -16,6 +16,7 @@ from muffinscript.ast import (
 )
 from muffinscript.ast.base import IfNode
 from muffinscript.ast.standard_lib import TypeCheckNode
+from muffinscript.ast.types import ListNode
 from muffinscript.constants import (
     PYTHON_TO_MUFFIN_TYPES,
     SUPPORTED_OPERATORS,
@@ -52,6 +53,8 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES], line_number: int)
         return node.value
     elif isinstance(node, NullNode):
         return node.value
+    elif isinstance(node, ListNode):
+        return [evaluate(item, variables, line_number) for item in node.items]
     elif isinstance(node, ArithmeticNode):
         left = evaluate(node.left, variables, line_number)
         right = evaluate(node.right, variables, line_number)

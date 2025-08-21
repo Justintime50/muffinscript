@@ -75,6 +75,13 @@ def tokenize(
                 case "}":
                     tokens.append("}")
                     i += 1
+                # Lists
+                case "[":
+                    tokens.append("[")
+                    i += 1
+                case "]":
+                    tokens.append("]")
+                    i += 1
                 # Arithmetic Operators
                 case "+":
                     tokens.append("+")

@@ -68,6 +68,11 @@ def test_tokenizer_floats():
     assert str(error.value) == "\033[31mSYNTAX ERROR\033[0m - Invalid float | line: 3"
 
 
+def test_tokenizer_lists():
+    tokens = tokenize("[1, 2, 3]", 1)
+    assert tokens == ["[", 1, 2, 3, "]"]
+
+
 def test_tokenizer_functions():
     tokens = tokenize('p("hello world")', 1)
     assert tokens == ["p", "(", '"hello world"', ")"]

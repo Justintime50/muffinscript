@@ -25,7 +25,7 @@ So what's it used for? Building tiny little scripts and tools.
 
 ## Features
 
-- Data types: `str` (either `"` or `'` work), `int`, `float`, `bool`, `null`
+- Data types: `str` (either `"` or `'` work), `int`, `float`, `bool`, `list`, `null`
 - Arithmetic: `+`, `-`, `*`, `/`, `%`
 - Comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=`
 - Variable assignment: `foo = "hello world"`
@@ -115,7 +115,6 @@ Actually executes the program by traversing the AST.
 - BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
 - Muffinscript is Turing Complete
   - For loops
-  - Lists
 
 #### Future
 

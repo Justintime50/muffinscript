@@ -5,6 +5,7 @@ from muffinscript.ast import (
     NullNode,
     StringNode,
 )
+from muffinscript.ast.types import ListNode
 
 
 def test_string_node():
@@ -34,4 +35,10 @@ def test_bool_node():
 def test_null_node():
     node = NullNode(value=None, line_number=1)
     assert node.value is None
+    assert node.line_number == 1
+
+
+def test_list_node():
+    node = ListNode(items=[1, 2, 3], line_number=1)
+    assert node.items[1] == 2
     assert node.line_number == 1

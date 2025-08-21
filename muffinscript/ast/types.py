@@ -34,3 +34,11 @@ class NullNode(BaseNode):
 
     def __init__(self, value: str, line_number: int):
         super().__init__(line_number, value)
+
+
+class ListNode(BaseNode):
+    """Lists: [1, 2, 3]"""
+
+    def __init__(self, items: list[BaseNode], line_number: int):
+        super().__init__(line_number, items)
+        self.items = items

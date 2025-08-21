@@ -15,6 +15,7 @@ from muffinscript.ast import (
 )
 from muffinscript.ast.base import IfNode
 from muffinscript.ast.standard_lib import TypeCheckNode
+from muffinscript.ast.types import ListNode
 from muffinscript.constants import (
     INVALID_COERCION,
     INVALID_FLOAT,
@@ -223,6 +224,11 @@ def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode:
         return IntNode(tokens[0], line_number)
     elif len(tokens) == 1 and isinstance(tokens[0], float):
         return FloatNode(tokens[0], line_number)
+    elif tokens[0] == "[" and tokens[-1] == "]":
+        list_items = []
+        for item in tokens[1:-1]:
+            list_items.append(parse_tokens([item], line_number))
+        return ListNode(list_items, line_number)
 
     raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
