@@ -14,7 +14,10 @@ from muffinscript.ast import (
     SleepNode,
     StringNode,
 )
-from muffinscript.ast.base import IfNode
+from muffinscript.ast.base import (
+    ForLoopNode,
+    IfNode,
+)
 from muffinscript.ast.standard_lib import TypeCheckNode
 from muffinscript.ast.types import ListNode
 from muffinscript.constants import (
@@ -22,6 +25,7 @@ from muffinscript.constants import (
     SUPPORTED_OPERATORS,
     SUPPORTED_TYPES,
     UNDEFINED_VARIABLE,
+    UNSUPPORTED_STATEMENT,
 )
 from muffinscript.errors import (
     MuffinScriptBaseError,
@@ -55,6 +59,17 @@ def evaluate(node: Any, variables: dict[str, SUPPORTED_TYPES], line_number: int)
         return node.value
     elif isinstance(node, ListNode):
         return [evaluate(item, variables, line_number) for item in node.items]
+    elif isinstance(node, ForLoopNode):
+        if node.iterable in variables:
+            iterable = variables[node.iterable]
+        else:
+            iterable = node.iterable
+        if not isinstance(iterable, list):
+            raise MuffinScriptRuntimeError(UNSUPPORTED_STATEMENT, line_number)
+        for item in iterable:
+            variables[node.item_name] = item
+            for body_line in node.body:
+                evaluate(body_line, variables, line_number)
     elif isinstance(node, ArithmeticNode):
         left = evaluate(node.left, variables, line_number)
         right = evaluate(node.right, variables, line_number)

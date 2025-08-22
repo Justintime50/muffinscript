@@ -94,6 +94,9 @@ def test_tokenizer_functions():
     assert tokens == ["if", "(", "foo", "==", "bar", ")", "{", "p", "(", True, ")", "}", "else", "{", "p", "(", False, ")", "}"]  # noqa
     # fmt: on
 
+    tokens = tokenize("for (item in myList) { p(item) }", 7)
+    assert tokens == ["for", "(", "item", "in", "myList", ")", "{", "p", "(", "item", ")", "}"]
+
 
 def test_tokenizer_arithmetic_operators():
     tokens = tokenize("foo = 2 + 2", 1)

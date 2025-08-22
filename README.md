@@ -32,7 +32,8 @@ So what's it used for? Building tiny little scripts and tools.
 - String interpolation: `foo = "hello #{bar}"`
 - Type coercion: `str(2)`, `int("2")`, `float("2.5")`
 - If statements: `if (foo == bar) { ... }`
-- Else statements `{ ... } else { ... }`
+- Else statements: `{ ... } else { ... }`
+- Foor loops: `for (item in myList) { ... }`
 - Comments (inline and alone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
@@ -113,8 +114,6 @@ Actually executes the program by traversing the AST.
 #### v0.1.0
 
 - BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
-- Muffinscript is Turing Complete
-  - For loops
 
 #### Future
 

@@ -13,7 +13,10 @@ from muffinscript.ast import (
     SleepNode,
     StringNode,
 )
-from muffinscript.ast.base import IfNode
+from muffinscript.ast.base import (
+    ForLoopNode,
+    IfNode,
+)
 from muffinscript.ast.standard_lib import TypeCheckNode
 from muffinscript.ast.types import ListNode
 from muffinscript.constants import (
@@ -32,10 +35,7 @@ from muffinscript.errors import (
 )
 
 
-def parse_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> Any:
+def parse_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> Any:
     """Parses tokens before sending them to the interpreter to ensure they have no syntax errors.
 
     We begin by parsing top-level statements, if we can't match one we start parsing expressions.
@@ -52,15 +52,15 @@ def parse_tokens(
     # If statements
     elif "if" == tokens[0]:
         return _parse_if_tokens(tokens, line_number)
+    # For loops
+    elif "for" == tokens[0]:
+        return _parse_for_loop_tokens(tokens, line_number)
     # All other expressions that need evaluation
     else:
         return _parse_expression(tokens, line_number)
 
 
-def _parse_print_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> PrintNode:
+def _parse_print_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> PrintNode:
     """Token schema: ["p", "(", "foo", ")"]"""
     _validate_function_schema(tokens, line_number, "p", 4)
     if (
@@ -79,10 +79,7 @@ def _parse_print_tokens(
     return PrintNode(expression, line_number)
 
 
-def _parse_variable_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> AssignNode:
+def _parse_variable_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> AssignNode:
     """Token schema: ["foo", "=", "hello world"]"""
     expression: Any = None
     if len(tokens) < 3:
@@ -97,10 +94,7 @@ def _parse_variable_tokens(
     )
 
 
-def _parse_sleep_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> BaseNode:
+def _parse_sleep_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNode:
     """Token schema: ["sleep", "(", 2.5, ")"]"""
     _validate_function_schema(tokens, line_number, "sleep", 4)
     if not isinstance(tokens[2], (str, int, float)):  # Allow str for variable names
@@ -108,10 +102,7 @@ def _parse_sleep_tokens(
     return SleepNode(tokens[2], line_number)
 
 
-def _parse_if_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> BaseNode:
+def _parse_if_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNode:
     """Token schema: ["if", "(", "foo", "=", "bar", ")", "{", ...]
 
     Note that if statement tokens may not occur on the same line because the opening and closing brackets
@@ -127,66 +118,38 @@ def _parse_if_tokens(
     else:
         raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
-    # Body
-    body = []
-    open_body_idx = next((i for i, token in enumerate(tokens) if token == "{"), None)  # nosec
-    close_body_idx = next((i for i, token in enumerate(tokens) if token == "}"), None)  # nosec
-    if open_body_idx is not None and close_body_idx is not None and close_body_idx > open_body_idx:
-        inner_tokens = tokens[open_body_idx + 1 : close_body_idx]
-        # Split inner_tokens into statements (assuming each statement starts with a known keyword or pattern)
-        i = 0
-        while i < len(inner_tokens):
-            # Find the end of the current statement
-            if inner_tokens[i] in SUPPORTED_STATEMENTS or (i + 1 < len(inner_tokens) and inner_tokens[i + 1] == "="):
-                # Find closing parenthesis for function calls
-                if "(" in inner_tokens[i:]:
-                    open_paren = i + inner_tokens[i:].index("(")
-                    close_paren = open_paren + inner_tokens[open_paren:].index(")")
-                    stmt_tokens = inner_tokens[i : close_paren + 1]
-                    body.append(parse_tokens(stmt_tokens, line_number))
-                    i = close_paren + 1
-                else:
-                    # Assignment or other statement
-                    stmt_tokens = inner_tokens[i : i + 3]
-                    body.append(parse_tokens(stmt_tokens, line_number))
-                    i += 3
-            else:
-                i += 1
-    else:
-        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+    body = _parse_function_body(tokens, line_number)
+    else_body = []
 
     # Else body (optional)
-    else_body = []
     if "else" in tokens:
         else_idx = tokens.index("else")
         if "{" in tokens[else_idx:]:
-            open_else_idx = next((i for i, token in enumerate(tokens[else_idx:]) if token == "{"), None)  # nosec
-            close_else_idx = next((i for i, token in enumerate(tokens[else_idx:]) if token == "}"), None)  # nosec
-            if open_else_idx is not None and close_else_idx is not None and close_else_idx > open_else_idx:
-                inner_tokens = tokens[else_idx + open_else_idx + 1 : else_idx + close_else_idx]
-                # Parse multiple statements in else body
-                i = 0
-                while i < len(inner_tokens):
-                    if inner_tokens[i] in SUPPORTED_STATEMENTS or (
-                        i + 1 < len(inner_tokens) and inner_tokens[i + 1] == "="
-                    ):
-                        # Find closing parenthesis for function calls
-                        if "(" in inner_tokens[i:]:
-                            open_paren = i + inner_tokens[i:].index("(")
-                            close_paren = open_paren + inner_tokens[open_paren:].index(")")
-                            stmt_tokens = inner_tokens[i : close_paren + 1]
-                            else_body.append(parse_tokens(stmt_tokens, line_number))
-                            i = close_paren + 1
-                        else:
-                            stmt_tokens = inner_tokens[i : i + 3]
-                            else_body.append(parse_tokens(stmt_tokens, line_number))
-                            i += 3
-                    else:
-                        i += 1
-            else:
-                raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+            else_body = _parse_function_body(tokens, line_number, else_idx)
 
     return IfNode(condition, body, line_number, else_body)
+
+
+def _parse_for_loop_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNode:
+    """Token schema: ["for", "(", "item", "in", "myList", ")", "{", ...]
+
+    Note that if statement tokens may not occur on the same line because the opening and closing brackets
+    could occur on different lines.
+    """
+    open_paren_idx = next((i for i, token in enumerate(tokens) if token == "("), None)  # nosec
+    close_paren_idx = next((i for i, token in enumerate(tokens) if token == ")"), None)  # nosec
+    if open_paren_idx is not None and close_paren_idx is not None and close_paren_idx > open_paren_idx:
+        inner_tokens = tokens[open_paren_idx + 1 : close_paren_idx]
+        if len(inner_tokens) != 3 or inner_tokens[1] != "in":
+            raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+        item_name = str(inner_tokens[0])
+        list_name = str(inner_tokens[2])
+    else:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+
+    body = _parse_function_body(tokens, line_number)
+
+    return ForLoopNode(item_name, list_name, body, line_number)
 
 
 def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode:
@@ -233,10 +196,7 @@ def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode:
     raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 
 
-def _parse_coercion_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> BaseNode:
+def _parse_coercion_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNode:
     """Token schema: ["str", "(", 2, ")"] or ["int", "(", "2", ")"] or ["float", "(", "2.5", ")"]"""
     value: Any = None
     coercion: BaseNode
@@ -261,10 +221,7 @@ def _parse_coercion_tokens(
     return coercion
 
 
-def _parse_type_check_tokens(
-    tokens: list[SUPPORTED_TYPES],
-    line_number: int,
-) -> BaseNode:
+def _parse_type_check_tokens(tokens: list[SUPPORTED_TYPES], line_number: int) -> BaseNode:
     """Token schema: ["type", "(", "foo", ")"]"""
     _validate_function_schema(tokens, line_number, "type", 4)
     if len(tokens) == 4 and isinstance(tokens[2], str):
@@ -285,3 +242,46 @@ def _validate_function_schema(
     """Validates the schema of a function call."""
     if tokens[0] != function_name or len(tokens) < min_tokens_lenth or tokens[1] != "(" or tokens[-1] != ")":
         raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+
+
+def _parse_function_body(
+    tokens: list[SUPPORTED_TYPES],
+    line_number: int,
+    enumeration_index: int | None = None,
+) -> list[Any]:
+    """Parses the body of a function call or block statement."""
+    body = []
+    if enumeration_index:
+        what_to_enumerate = tokens[enumeration_index:]
+    else:
+        what_to_enumerate = tokens
+    open_body_idx = next((i for i, token in enumerate(what_to_enumerate) if token == "{"), None)  # nosec
+    close_body_idx = next((i for i, token in enumerate(what_to_enumerate) if token == "}"), None)  # nosec
+    if open_body_idx is not None and close_body_idx is not None and close_body_idx > open_body_idx:
+        if enumeration_index:
+            inner_tokens = tokens[enumeration_index + open_body_idx + 1 : enumeration_index + close_body_idx]
+        else:
+            inner_tokens = tokens[open_body_idx + 1 : close_body_idx]
+        # Split inner_tokens into statements (assuming each statement starts with a known keyword or pattern)
+        i = 0
+        while i < len(inner_tokens):
+            # Find the end of the current statement
+            if inner_tokens[i] in SUPPORTED_STATEMENTS or (i + 1 < len(inner_tokens) and inner_tokens[i + 1] == "="):
+                # Find closing parenthesis for function calls
+                if "(" in inner_tokens[i:]:
+                    open_paren = i + inner_tokens[i:].index("(")
+                    close_paren = open_paren + inner_tokens[open_paren:].index(")")
+                    stmt_tokens = inner_tokens[i : close_paren + 1]
+                    body.append(parse_tokens(stmt_tokens, line_number))
+                    i = close_paren + 1
+                else:
+                    # Assignment or other statement
+                    stmt_tokens = inner_tokens[i : i + 3]
+                    body.append(parse_tokens(stmt_tokens, line_number))
+                    i += 3
+            else:
+                i += 1
+    else:
+        raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
+
+    return body

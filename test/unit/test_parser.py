@@ -1,5 +1,6 @@
 import pytest
 
+from muffinscript.ast.standard_lib import PrintNode
 from muffinscript.ast.types import IntNode
 from muffinscript.errors import (
     MuffinScriptRuntimeError,
@@ -222,6 +223,18 @@ def test_parse_if_tokens():
     with pytest.raises(MuffinScriptSyntaxError) as error:
         parse_tokens(["if", "(", "2 == 2", ")", "{", "p", "(", "true", ")", "}", "else", "{"], 5)
     assert str(error.value) == "\033[31mSYNTAX ERROR\033[0m - Unsupported statement | line: 5"
+
+
+def test_parse_for_loop_tokens():
+    node = parse_tokens(["for", "(", "item", "in", "myList", ")", "{", "p", "(", "item", ")", "}"], 1)
+    assert node.item_name == "item"
+    assert node.iterable == "myList"
+    assert isinstance(node.body[0], PrintNode)
+    assert node.line_number == 1
+
+    with pytest.raises(MuffinScriptSyntaxError) as error:
+        parse_tokens(["for", "(", "item", "myList", ")", "{", "p", "(", "item", ")", "}"], 2)  # no "in"
+    assert str(error.value) == "\033[31mSYNTAX ERROR\033[0m - Unsupported statement | line: 2"
 
 
 def test_parse_expressions():

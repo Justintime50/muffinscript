@@ -96,7 +96,7 @@ def _run_code_block(code_lines, variables, start_line=1):
         line = code_lines[i]
         line_number = start_line + i
         tokens = tokenize(line, line_number)
-        if tokens and tokens[0] == "if":
+        if tokens and (tokens[0] == "if" or tokens[0] == "for"):
             block_tokens = tokens[:]
             open_braces = tokens.count("{")
             close_braces = tokens.count("}")
