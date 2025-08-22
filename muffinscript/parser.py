@@ -280,7 +280,7 @@ def _parse_function_body(
                     body.append(parse_tokens(stmt_tokens, line_number))
                     i += 3
             else:
-                i += 1
+                raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
     else:
         raise MuffinScriptSyntaxError(UNSUPPORTED_STATEMENT, line_number)
 

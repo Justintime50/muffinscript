@@ -31,7 +31,7 @@ def main():
     variables = {}
 
     try:
-        _run_code_block(code_content, variables, start_line=1)
+        _run_code_block(code_content, variables)
     except MuffinScriptBaseError as error:
         if MUFFIN_DEBUG:
             raise error
@@ -49,8 +49,6 @@ def repl():
 
     print('MuffinScript REPL. Type "exit" to leave.')
     variables = {}
-    line_number = 1
-
     buffer = []
     open_braces = 0
     close_braces = 0
@@ -70,14 +68,12 @@ def repl():
                 code_block = buffer
                 buffer = []
                 open_braces = close_braces = 0
-                _run_code_block(code_block, variables, start_line=line_number)
-                line_number += len(code_block)
+                _run_code_block(code_block, variables)
             elif open_braces == 0:
                 # Single-line statement
                 code_block = buffer
                 buffer = []
-                _run_code_block(code_block, variables, start_line=line_number)
-                line_number += len(code_block)
+                _run_code_block(code_block, variables)
             # else: keep buffering lines
         except MuffinScriptBaseError as error:
             output_repl_error(error)
@@ -88,35 +84,36 @@ def repl():
             break
 
 
-def _run_code_block(code_lines, variables, start_line=1):
+def _run_code_block(code_lines, variables):
     """Runs a block of code, reusable for both the interpreter and REPL."""
     executable_lines = {}
     i = 0
     while i < len(code_lines):
         line = code_lines[i]
-        line_number = start_line + i
+        line_number = i + 1
         tokens = tokenize(line, line_number)
-        if tokens and (tokens[0] == "if" or tokens[0] == "for"):
+        if tokens and tokens[0] in ("if", "for"):
             block_tokens = tokens[:]
             open_braces = tokens.count("{")
             close_braces = tokens.count("}")
             while open_braces > close_braces and i + 1 < len(code_lines):
                 i += 1
-                next_tokens = tokenize(code_lines[i], start_line + i)
+                line_number = i + 1
+                next_tokens = tokenize(code_lines[i], line_number)
                 block_tokens.extend(next_tokens)
                 open_braces += next_tokens.count("{")
                 close_braces += next_tokens.count("}")
             # Variables must have assignment
             if len(tokens) == 1 and isinstance(tokens[0], str):
                 raise MuffinScriptRuntimeError(UNDEFINED_VARIABLE, line_number)
-            nodes = parse_tokens(block_tokens, line_number)
-            executable_lines[str(line_number)] = nodes
+            node = parse_tokens(block_tokens, line_number)
+            executable_lines[str(line_number)] = node
         elif tokens:
             # Variables must have assignment
             if len(tokens) == 1 and isinstance(tokens[0], str):
                 raise MuffinScriptRuntimeError(UNDEFINED_VARIABLE, line_number)
-            nodes = parse_tokens(tokens, line_number)
-            executable_lines[str(line_number)] = nodes
+            node = parse_tokens(tokens, line_number)
+            executable_lines[str(line_number)] = node
         i += 1
 
     for line_number, node in executable_lines.items():

@@ -13,15 +13,13 @@ Delectable little programming language.
 
 </div>
 
-## Why MuffinScript
+## What is MuffinScript
 
-We should probably start with what it's not. It's NOT fast (built on Python), it's NOT safe (built on Python), it's NOT sexy (built on Python)... so why?
+MuffinScript is a delectably simple programming language baked for fun, not for fame. It’s not going to win any speed records (it’s built on Python), can't be used for integrated circuits, nor will it dazzle you with cutting-edge features. What it will do is make writing tiny scripts feel like a treat.
 
-It IS dead simple, it IS robust, it IS delectably little.
+MuffinScript is all about the basics: variables, arithmetic, strings, lists, loops, and conditionals, served up with a syntax that’s easy to read and a parser that’s forgiving enough for beginners but robust enough for tinkerers. You get a REPL for instant feedback, clear error messages with a dash of color, and a standard library that covers the essentials (printing, type checking, string concatenation, sleeping, etc).
 
-I built **MuffinScript** as a POC (mostly without AI) to see if I could even build a **Turing Complete** programming language. I don't have intentions for it to become very useful, but it was super fun to build some basic programming language concepts into.
-
-So what's it used for? Building tiny little scripts and tools.
+It’s a proof of concept, a playground, and a learning tool. If you want to see how a programming language is built from scratch, MuffinScript is your open kitchen.
 
 ## Features
 
@@ -32,9 +30,9 @@ So what's it used for? Building tiny little scripts and tools.
 - String interpolation: `foo = "hello #{bar}"`
 - Type coercion: `str(2)`, `int("2")`, `float("2.5")`
 - If statements: `if (foo == bar) { ... }`
-- Else statements: `{ ... } else { ... }`
+  - Else statements: `if (...) { ... } else { ... }`
 - Foor loops: `for (item in myList) { ... }`
-- Comments (inline and alone): `// This is a comment`
+- Comments (inline and standalone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
 - Standard library
@@ -46,8 +44,7 @@ So what's it used for? Building tiny little scripts and tools.
 
 ## Usage
 
-- Variables are global
-- Functions are public
+NOTE: All variables are global (this includes `item` in foor loops).
 
 ```ms
 // Variable assignment and printing
@@ -63,6 +60,13 @@ p(cat("I say ", foo))
 // If statements
 if (foo == bar) {
     p(true)
+} else {
+    p(false)
+}
+
+// For loops
+for (item in [1, 2, 3]) {
+    p(item + 1)
 }
 ```
 
@@ -86,37 +90,30 @@ muffin --version
 
 ### Abstract Syntax Tree (AST)
 
-Defines the abstract supported syntax of the programming language (what is a string, what is a variable, etc).
+The AST is the recipe book for MuffinScript. It defines the basic ingredients like what counts as a string, a number, or a variable.
 
 ### Lexer (Tokenizer)
 
-Takes raw text and turns it into a list of tokens which are structured pieces of the programming language (keywords, numbers, strings, symbols).
+The lexer is the kitchen assistant. It takes raw text and chops it up into tokens by identifying keywords, numbers, strings, and symbols.
 
-- Takes `print("hello world")` and converts it into `print`, `(`, `"hello world"`, and `)`
-- Detects errors in characters
-- Should convert tokens to their most appropriate types
+- Example: p("hello world") becomes p, (, "hello world", )
+- Spots errors in characters
+- Converts tokens to their proper types
 
 ### Parser
 
-Parses the tokens from the Lexer.
+The parser is the chef who checks the recipe. It looks at the tokens and makes sure they follow MuffinScript’s grammar rules.
 
-- Grammar rules, defines what combos of tokens are valid
-- Syntax errors detect issues
+- Decides which combinations of tokens are valid
+- Catches syntax mistakes
 
 ### Interpreter
 
-Actually executes the program by traversing the AST.
-
-- Prints values, assigns variables, etc
+The interpreter is the baker. It reads the AST and actually runs your code by printing values, assigning variables, and more executing the code.
 
 ### TODO
 
-#### v0.1.0
-
-- BUG: line numbers for errors are off in `if` statements due to us buffering the entire block together
-
-#### Future
-
+- BUG: line numbers for errors are off in block statements (eg: `if`, `for`) due to us buffering the entire block and parsing it as one set of tokens instead of each line of tokens individually (the parser will only know the line number of the end of the block by the time it runs error checking)
 - Functions
 - Error handling
 - Imports
