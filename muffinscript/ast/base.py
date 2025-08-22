@@ -51,7 +51,7 @@ class IfNode(BaseNode):
 class ForLoopNode(BaseNode):
     """For loop: for (item in myList) { ... }"""
 
-    def __init__(self, item_name: str, iterable: str, body: list[Any], line_number: int):
+    def __init__(self, item_name: str, iterable: str | list[Any], body: list[Any], line_number: int):
         super().__init__(line_number)
         self.item_name = item_name
         self.iterable = iterable

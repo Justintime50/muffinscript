@@ -40,5 +40,5 @@ class ListNode(BaseNode):
     """Lists: [1, 2, 3]"""
 
     def __init__(self, items: list[BaseNode], line_number: int):
-        super().__init__(line_number, items)
+        super().__init__(line_number)
         self.items = items

@@ -22,8 +22,7 @@ class SleepNode(BaseNode):
     """Sleep function: sleep(1000)"""
 
     def __init__(self, duration: Any, line_number: int):
-        super().__init__(line_number, duration)
-        self.duration = duration
+        super().__init__(line_number)
         self.duration = duration
 
 

@@ -178,6 +178,7 @@ def _parse_expression(tokens: list[Any], line_number: int) -> BaseNode:
         # Strip quotes if it's a string literal
         if tokens[0].startswith('"') and tokens[0].endswith('"'):
             return StringNode(tokens[0][1:-1], line_number)
+        # TODO: This is a variable and should be its own node type
         return StringNode(tokens[0], line_number)
     elif len(tokens) == 1 and (tokens[0] is True or tokens[0] is False):
         return BoolNode(str(tokens[0]).lower(), line_number)

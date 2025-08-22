@@ -114,6 +114,8 @@ The interpreter is the baker. It reads the AST and actually runs your code by pr
 ### TODO
 
 - BUG: line numbers for errors are off in block statements (eg: `if`, `for`) due to us buffering the entire block and parsing it as one set of tokens instead of each line of tokens individually (the parser will only know the line number of the end of the block by the time it runs error checking)
+- Variables don't have their own node in the AST but should
+- List operations (append, pop, index)
 - Functions
 - Error handling
 - Imports
