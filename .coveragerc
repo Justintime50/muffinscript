@@ -2,5 +2,6 @@
 exclude_lines =
     if __name__ == '__main__':
     main()
+    repl()
 [run]
 omit = muffinscript/_version.py

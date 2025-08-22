@@ -21,6 +21,18 @@ def test_main_print(monkeypatch, capsys):
     assert "hello world" in captured.out
 
 
+def test_main_print_in_block(monkeypatch, capsys):
+    """Test happy path printing in a block."""
+    monkeypatch.setattr(sys, "argv", ["muffin", "test.ms"])
+    mock_file = io.StringIO('foo = "hello world"\nif (true) {\n\tp(foo)\n}\n')
+    monkeypatch.setattr(builtins, "open", lambda *a, **kw: mock_file)
+
+    main()
+
+    captured = capsys.readouterr()
+    assert "hello world" in captured.out
+
+
 def test_main_print_empty_file(monkeypatch, capsys):
     """Test we print nothing if the file is empty."""
     monkeypatch.setattr(sys, "argv", ["muffin", "test.ms"])
