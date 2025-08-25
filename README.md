@@ -44,7 +44,7 @@ It’s a proof of concept, a playground, and a learning tool. If you want to see
 
 ## Usage
 
-NOTE: All variables are global (this includes `item` in foor loops).
+NOTE: All variables are global (this includes `item` in for loops).
 
 ```ms
 // Variable assignment and printing

@@ -10,7 +10,7 @@ bandit:
 
 # Builds the project in preparation for release
 build:
-    {{VIRTUAL_BIN}}/pyinstaller muffinscript/muffin.py
+    {{VIRTUAL_BIN}}/pyinstaller muffinscript/muffin.py -y
 
 # Runs the Black Python formatter against the project
 black:
