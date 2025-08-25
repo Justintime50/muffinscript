@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Next Release
+## v0.1.0 (2025-08-25)
 
 - Data types: `str` (either `"` or `'` work), `int`, `float`, `bool`, `list`, `null`
 - Arithmetic: `+`, `-`, `*`, `/`, `%`
@@ -9,9 +9,10 @@
 - String interpolation: `foo = "hello #{bar}"`
 - Type coercion: `str(2)`, `int("2")`, `float("2.5")`
 - If statements: `if (foo == bar) { ... }`
-- Else statements: `{ ... } else { ... }`
+  - Else statements: `if (...) { ... } else { ... }`
 - Foor loops: `for (item in myList) { ... }`
-- Comments (inline and alone): `// This is a comment`
+  - Lists: `[1, 2, 3]`
+- Comments (inline and standalone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
 - Standard library

@@ -32,6 +32,7 @@ It’s a proof of concept, a playground, and a learning tool. If you want to see
 - If statements: `if (foo == bar) { ... }`
   - Else statements: `if (...) { ... } else { ... }`
 - Foor loops: `for (item in myList) { ... }`
+  - Lists: `[1, 2, 3]`
 - Comments (inline and standalone): `// This is a comment`
 - Clear, colored error messages: `ERROR - Invalid expression | line: 3`
 - REPL: Use `muffin` to enter
