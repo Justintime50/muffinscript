@@ -5,8 +5,8 @@
 Delectable little programming language.
 
 [![Build Status](https://github.com/justintime50/muffinscript/workflows/build/badge.svg)](https://github.com/justintime50/muffinscript/actions)
-[![Coverage Status](https://coveralls.io/repos/github/justintime50/muffinscript/badge.svg?branch=main)](https://coveralls.io/github/justintime50/muffinscript?branch=main)
-[![PyPi](https://img.shields.io/pypi/v/muffinscript)](https://pypi.org/project/muffinscript)
+[![Coverage Status](https://codecov.io/github/justintime50/muffinscript/config/badge)](https://coveralls.io/github/justintime50/muffinscript?branch=main)
+[![Version](https://img.shields.io/github/v/tag/justintime50/muffinscript)](https://github.com/justintime50/muffinscript/releases)
 [![Licence](https://img.shields.io/github/license/justintime50/muffinscript)](LICENSE)
 
 <img src="https://raw.githubusercontent.com/justintime50/assets/main/src/muffinscript/showcase.png" width="256px" alt="Showcase">
