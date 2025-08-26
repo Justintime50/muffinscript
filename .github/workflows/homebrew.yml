@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     name: homebrew-releaser
     steps:
-      - uses: actions/checkout@v4
-      - uses: extractions/setup-just@v2
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - run: just install build
       - name: Release project to my Homebrew tap
         uses: Justintime50/homebrew-releaser@v2
         with:

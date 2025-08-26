@@ -43,6 +43,20 @@ It’s a proof of concept, a playground, and a learning tool. If you want to see
   - Sleep: `sleep(10.5)`
 - Debug mode by passing `MUFFIN_DEBUG=true`
 
+## Install
+
+```sh
+# Homebrew install
+brew tap justintime50/formulas
+brew install vcrpy-bincon
+
+# Install locally
+just install
+
+# Build from source
+just build
+```
+
 ## Usage
 
 NOTE: All variables are global (this includes `item` in for loops).
@@ -123,3 +137,15 @@ The interpreter is the baker. It reads the AST and actually runs your code by pr
 - Package manager (StudMuffin)
   - Call the directory packages are stored `oven` and the packages `ingredients`
   - Use GitHub as source of packages
+- Automate releasing
+
+### Releasing
+
+Releasing must be done manually for now:
+
+1. Delete `tar` from release
+2. Clean any temp files (coverage, venv, etc)
+3. Run `just build` locally
+4. Tar up repo: `tar -czvf v0.1.0.tar.gz --exclude=.git .`
+5. Replace `tar` on release
+6. Update Homebrew formula tar link and checksum: `shasum -a 256 v0.1.0.tar.gz`
