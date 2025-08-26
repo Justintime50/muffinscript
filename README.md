@@ -48,7 +48,7 @@ It’s a proof of concept, a playground, and a learning tool. If you want to see
 ```sh
 # Homebrew install
 brew tap justintime50/formulas
-brew install vcrpy-bincon
+brew install muffinscript
 
 # Install locally
 just install
