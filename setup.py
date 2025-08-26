@@ -13,10 +13,6 @@ with open('muffinscript/_version.py', 'r') as version_file:
     else:
         raise RuntimeError('Unable to find version string!')
 
-REQUIREMENTS = [
-    # Add your list of production dependencies here, eg:
-    # 'requests == 2.*',
-]
 
 DEV_REQUIREMENTS = [
     'bandit == 1.8.*',
@@ -40,7 +36,6 @@ setuptools.setup(
     license='MIT',
     packages=setuptools.find_packages(
         exclude=[
-            'examples',
             'test',
         ]
     ),
@@ -54,7 +49,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=REQUIREMENTS,
     extras_require={
         'dev': DEV_REQUIREMENTS,
     },
