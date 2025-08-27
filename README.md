@@ -101,6 +101,10 @@ muffin --help
 muffin --version
 ```
 
+### IDE Extensions
+
+Check out the [MuffinScript VS Code Extension](https://github.com/Justintime50/muffinscript-vscode) to get syntax highlighting for MuffinScript.
+
 ## Development
 
 ### Abstract Syntax Tree (AST)
