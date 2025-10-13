@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Next Release
+
+- Upgraded Python to 3.14 under the hood
+
 ## v0.1.0 (2025-08-25)
 
 - Data types: `str` (either `"` or `'` work), `int`, `float`, `bool`, `list`, `null`

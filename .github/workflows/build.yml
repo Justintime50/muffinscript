@@ -23,13 +23,13 @@ jobs:
       - uses: extractions/setup-just@v2
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.14'
       - run: just install lint
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pythonversion: ['3.13']
+        pythonversion: ['3.14']
     steps:
       - uses: actions/checkout@v4
       - uses: extractions/setup-just@v2
@@ -45,7 +45,7 @@ jobs:
       - uses: extractions/setup-just@v2
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.14'
       - run: just install coverage
       - uses: codecov/codecov-action@v5
         with:
