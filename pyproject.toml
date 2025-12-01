@@ -1,3 +1,37 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "muffinscript"
+description = "Delectable little programming language."
+dynamic = ["version"]
+readme = "README.md"
+requires-python = "==3.14.*"
+license = { text = "MIT" }
+authors = [{ name = "justintime50" }]
+urls = { Homepage = "http://github.com/justintime50/muffinscript" }
+scripts = { muffinscript = "muffinscript.muffin:main" }
+optional-dependencies = { dev = [
+    "bandit == 1.9.*",
+    "black == 25.*",
+    "flake8 == 7.*",
+    "isort == 7.*",
+    "mypy == 1.18.*",
+    "pyinstaller == 6.*",
+    "pytest == 8.*",
+    "pytest-cov == 7.*",
+] }
+
+[tool.setuptools.dynamic]
+version = { attr = "muffinscript._version.__version__" }
+
+[tool.setuptools.packages.find]
+exclude = ["examples", "test"]
+
+[tool.setuptools.package-data]
+"muffinscript" = ["py.typed"]
+
 [tool.black]
 line-length = 120
 
