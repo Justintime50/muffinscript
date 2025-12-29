@@ -16,6 +16,7 @@ optional-dependencies = { dev = [
     "bandit == 1.9.*",
     "black == 25.*",
     "flake8 == 7.*",
+    "Flake8-pyproject == 1.2.*",
     "isort == 7.*",
     "mypy == 1.18.*",
     "pyinstaller == 6.*",
@@ -48,3 +49,7 @@ use_parentheses = true
 
 [tool.mypy]
 disable_error_code = "import-untyped"
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = "E203"
