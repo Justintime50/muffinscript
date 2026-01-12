@@ -16,11 +16,6 @@ jobs:
       - run: just install build
       - run: tar -czvf muffinscript.tar.gz dist
       - name: Upload tar to release
-        uses: actions/upload-release-asset@v1
+        run: gh release upload "${{ github.event.release.tag_name }}" muffinscript.tar.gz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: muffinscript.tar.gz
-          asset_name: muffinscript.tar.gz
-          asset_content_type: application/gzip
