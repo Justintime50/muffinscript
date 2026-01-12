@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Next Release
+## v0.2.0 (2025-01-11)
 
 - Upgraded Python to 3.14 under the hood
 

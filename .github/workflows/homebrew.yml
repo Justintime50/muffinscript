@@ -1,0 +1,29 @@
+name: homebrew
+
+on:
+  workflow_run:
+    workflows: ['build']
+    types:
+      - completed
+  workflow_dispatch: ~
+
+jobs:
+  homebrew-releaser:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    name: homebrew-releaser
+    steps:
+      - name: Release project to my Homebrew tap
+        uses: Justintime50/homebrew-releaser@v3
+        with:
+          homebrew_owner: Justintime50
+          homebrew_tap: homebrew-formulas
+          github_token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          commit_owner: Justintime50
+          commit_email: 39606064+Justintime50@users.noreply.github.com
+          custom_tarball: muffinscript
+          update_readme_table: true
+          install: |
+            libexec.install "muffin"
+            bin.install_symlink libexec/"muffin/muffin" => "muffin"
+          test: 'assert_match "Muffin", shell_output("#{bin}/muffin --version")'

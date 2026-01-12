@@ -1,52 +1,27 @@
 name: build
 
 on:
-  push:
-    paths:
-      - '.github/workflows/build.yml'
-      - '**/*.py'
-    branches:
-      - '**'
-    tags:
-      - '!**'
-  pull_request:
-    paths:
-      - '.github/workflows/build.yml'
-      - '**/*.py'
+  release:
+    types: [published]
   workflow_dispatch: ~
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: extractions/setup-just@v3
       - uses: actions/setup-python@v6
         with:
           python-version: '3.14'
-      - run: just install lint
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        pythonversion: ['3.14']
-    steps:
-      - uses: actions/checkout@v5
-      - uses: extractions/setup-just@v3
-      - uses: actions/setup-python@v6
+      - run: just install build
+      - run: tar -czvf muffinscript.tar.gz dist
+      - name: Upload tar to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          python-version: ${{ matrix.pythonversion }}
-      - run: just install coverage
-  coverage:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: extractions/setup-just@v3
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.14'
-      - run: just install coverage
-      - uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: muffinscript.tar.gz
+          asset_name: muffinscript.tar.gz
+          asset_content_type: application/gzip

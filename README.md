@@ -4,7 +4,7 @@
 
 Delectable little programming language.
 
-[![Build Status](https://github.com/justintime50/muffinscript/workflows/build/badge.svg)](https://github.com/justintime50/muffinscript/actions)
+[![CI Status](https://github.com/justintime50/muffinscript/workflows/ci/badge.svg)](https://github.com/justintime50/muffinscript/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/justintime50/muffinscript)](https://app.codecov.io/github/Justintime50/muffinscript)
 [![Version](https://img.shields.io/github/v/tag/justintime50/muffinscript)](https://github.com/justintime50/muffinscript/releases)
 [![Licence](https://img.shields.io/github/license/justintime50/muffinscript)](LICENSE)
@@ -142,13 +142,3 @@ The interpreter is the baker. It reads the AST and actually runs your code by pr
   - Call the directory packages are stored `oven` and the packages `ingredients`
   - Use GitHub as source of packages
 - Automate releasing
-
-### Releasing
-
-Releasing must be done manually for now:
-
-1. Clean any temp files (coverage, venv, etc)
-1. Run `just build` locally
-1. Tar up repo: `tar -czvf v0.1.0.tar.gz dist`
-1. Upload `tar` to release
-1. Update Homebrew formula tar link and checksum: `shasum -a 256 v0.1.0.tar.gz`
