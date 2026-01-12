@@ -26,4 +26,3 @@ jobs:
             libexec.install "muffin"
             bin.install_symlink libexec/"muffin/muffin" => "muffin"
           test: 'assert_match "Muffin", shell_output("#{bin}/muffin --version")'
-          debug: true
