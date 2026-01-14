@@ -1,18 +1,8 @@
 name: ci
 
 on:
-  push:
-    paths:
-      - '.github/workflows/build.yml'
-      - '**/*.py'
-    branches:
-      - '**'
-    tags:
-      - '!**'
-  pull_request:
-    paths:
-      - '.github/workflows/build.yml'
-      - '**/*.py'
+  push: ~
+  pull_request: ~
   workflow_dispatch: ~
 
 jobs:
