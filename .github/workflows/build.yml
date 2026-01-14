@@ -8,9 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: extractions/setup-just@v3
-      - uses: actions/setup-python@v6
+      - uses: justintime50/composite-actions/bootstrap-python@v1
         with:
           python-version: '3.14'
       - run: just install build
