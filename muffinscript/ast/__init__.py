@@ -16,7 +16,6 @@ from .types import (
     StringNode,
 )
 
-
 __all__ = [
     # Base
     "ArithmeticNode",
